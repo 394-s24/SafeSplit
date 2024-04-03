@@ -1,12 +1,35 @@
 import { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {db} from './FireBase.js';
+import { ref, onValue } from "firebase/database";
+import { useEffect } from 'react';
 
 const App = () => {
   const [count, setCount] = useState(0);
+  const [ gameSnapshot, setGameSnapshot ] = useState();
 
+    useEffect(() => {
+
+        const gamesRef = ref(db, 'requests');
+        
+        onValue(gamesRef, (snapshot) => {
+            
+            setGameSnapshot(snapshot.val());
+        });
+    });
+  
+  // const data = FetchData();
+  // console.log(data);
   return (
-    <div className="App">
+    <div >
+      <h1>SafeSplit</h1>
+      <h2>Requests</h2>
+      <pre>{JSON.stringify(gameSnapshot, null, 2)}</pre>
+    </div>
+   
+   
+    /*  <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello Vite + React!</p>
@@ -38,7 +61,7 @@ const App = () => {
           </a>
         </p>
       </header>
-    </div>
+    </div> */
   );
 };
 

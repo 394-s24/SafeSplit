@@ -39,10 +39,8 @@ const App = () => {
       var matchEnd = new Date(matchTimeEnd * 1000).toLocaleString();
       const status = gameSnapshot["requests"][i].status;
       reqData.push([matchStart, matchEnd, matchFrom, matchTo, user, numRiders, status])
-      // reqData.([user, matchFrom, matchTo, matchStart, matchEnd, numRiders, count, status])
     } 
-
-    reqData.sort() 
+    reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   }
 
   var matchData = Array()
@@ -68,7 +66,7 @@ const App = () => {
       matchData.push([matchStart, matchEnd, matchFrom, matchTo, riderArr])
     }
 
-    matchData.sort()
+    matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   }
   // Accessing just the rider1 field from the first object in gameSnapshot
   
@@ -95,7 +93,7 @@ const App = () => {
             <Card.Body>
               <Card.Title>Request</Card.Title>
               
-              <Card.Subtitle className="mb-2 text-muted">{item[0]}
+              <Card.Subtitle className="mb-2 text-muted">{item[4]}
               </Card.Subtitle>
               <Card.Subtitle className="mb-2 text-muted">Riders: {item[5]}
               </Card.Subtitle>
@@ -116,7 +114,7 @@ const App = () => {
             <Card.Body>
               <Card.Title>Match</Card.Title>
               
-              <Card.Subtitle className="mb-2 text-muted">{item[4].map(rider => (<span>{rider} </span> ))}
+              <Card.Subtitle className="mb-2 text-muted">{item[4].map(rider => (<span>{rider} <br></br></span> ))}
               </Card.Subtitle>
               <Card.Title>From: {item[2]}</Card.Title>
               <Card.Title>To: {item[3]}</Card.Title>

@@ -3,22 +3,20 @@ import logo from './logo.svg';
 import './App.css';
 import { db } from './FireBase.js';
 import { ref, onValue } from "firebase/database";
-import { useEffect } from 'react';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import Card from 'react-bootstrap/Card';
-
+import { useEffect } from "react";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
+import Card from "react-bootstrap/Card";
+import RideForm from "./components/Form/RideForm.jsx";
 
 const App = () => {
   const [gameSnapshot, setGameSnapshot] = useState();
-
   useEffect(() => {
-
     const gamesRef = ref(db);
     onValue(gamesRef, (snapshot) => {
       setGameSnapshot(snapshot.val());
     });
-  });
+  }, []);
 
   // Make sure gameSnapshot has loaded and contains data
   if (!gameSnapshot) {
@@ -27,7 +25,7 @@ const App = () => {
 
   const user = "johnsmith@gmail.com";
 
-  var reqData = Array()
+  var reqData = Array();
   for (let i = 0; i < Object.keys(gameSnapshot["requests"]).length; i++) {
     if (gameSnapshot["requests"][i].email == user) {
       const matchFrom = gameSnapshot["requests"][i].locationFrom;
@@ -42,7 +40,7 @@ const App = () => {
     }
     reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   }
-
+  
   var matchData = Array()
   for (let i = 0; i < Object.keys(gameSnapshot["matches"]).length; i++) {
     let riderArr = Array();
@@ -62,30 +60,21 @@ const App = () => {
       var matchStart = new Date(matchTimeStart * 1000).toLocaleString();
       const matchTimeEnd = gameSnapshot["matches"][i].timeEnd;
       var matchEnd = new Date(matchTimeEnd * 1000).toLocaleString();
-      matchData.push([matchStart, matchEnd, matchFrom, matchTo, riderArr])
+      // matchData.push([riderArr, matchFrom, matchTo, matchStart, matchEnd])
+      matchData.push([matchStart, matchEnd, matchFrom, matchTo, riderArr]);
     }
 
-    matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    matchData.sort();
   }
   // Accessing just the rider1 field from the first object in gameSnapshot
 
-
-
-
   return (
-    <html>
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous"
-        />
-      </head>
+    <div>
       <Tabs
         defaultActiveKey="request"
         id="uncontrolled-tab-example"
-        className="mb-3">
+        className="mb-3"
+      >
         <Tab eventKey="request" title="Request">
           {reqData.map(item => (
             <Card style={{ width: '30rem' }}>
@@ -134,14 +123,13 @@ const App = () => {
               </Card.Text>
             </Card.Body>
           </Card> */}
-
-
         </Tab>
       </Tabs>
-    </html>
+
+      {/* Change passed currMaxID when we account for requests deletion */}
+      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} />
+    </div>
   );
-
 };
-
 
 export default App;

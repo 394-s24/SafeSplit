@@ -133,6 +133,7 @@ const App = () => {
 
       {/* Change passed currMaxID when we account for requests deletion */}
       <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} data={gameSnapshot} />
+      <RideForm currMaxMatchID={Object.keys(gameSnapshot["Matches"]).length} data={gameSnapshot} />
     </div>
   );
 };

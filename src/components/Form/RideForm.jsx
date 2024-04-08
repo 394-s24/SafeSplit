@@ -8,10 +8,11 @@ import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 
 import "./RideForm.css"
+import { i } from 'vitest/dist/reporters-P7C2ytIv';
 
 
 
-const RideForm = ({currMaxId, data}) => {
+const RideForm = ({currMaxId, data, currMaxMatchId}) => {
   const [locationFrom, setLocationFrom] = useState("")
   const [locationTo, setLocationTo] = useState("")
   const [email, setEmail] = useState("")
@@ -65,8 +66,9 @@ const RideForm = ({currMaxId, data}) => {
               if (!(dateStartGMT > currentRequest.timeEnd || dateEndGMT < currentRequest.timeStart)) 
                 {
                   var intersection = Math.min(timeEnd, currentRequest.timeEnd) - Math.max(timeStart, currentRequest.timeStart);
-                  if (potentialMatches != 2) {
-                    potentialMatches.push([currentRequest, intersection]);
+                  if (potentialMatches.length != 2) {
+                    //potentialMatches is an array of arrays, where each array holds a request, the intersection time, and the index of the request
+                    potentialMatches.push([currentRequest, intersection, i]);
                   }
                   else {
                     var smallestValue = potentialMatches[0][1];
@@ -78,24 +80,77 @@ const RideForm = ({currMaxId, data}) => {
                       }
                     }
                     if (smallestValue < intersection) {
-                      potentialMatches[smallestIndex] = [currentRequest, intersection];
+                      potentialMatches[smallestIndex] = [currentRequest, intersection, i];
                     }
-                    });
+                    };
                       
-                    });
+                    };
                   }
                 }
-            {
-              //it's a match
-              matched++;
-              
             }
-            
-            }
+            if (potentialMatches.length != 0){
+              var additionalRider;
+              if (potentialMatches.length == 1) {
+                additionalRider = "";
+              }
+              else {
+                additionalRider = potentialMatches[1][0].email
+              }
+                //set matches
+                set(ref(db, 'matches/' + currMaxMatchId), {
+                 locationFrom: locationFrom,
+                  locationTo: locationTo,
+                 rider1: "johnsmith@gmail.com",
+                 rider2: potentialMatches[0][0].email,
+                 rider3: additionalRider,
+                 //just returns the last requesters timeStart and timeEnd
+                 timeEnd: dateEndGMT,
+                 timeStart: dateStartGMT,
+               });
+               //add new request
+               set(ref(db, 'requests/' + currMaxId), {
+                 email: "johnsmith@gmail.com",
+                 locationFrom: locationFrom,
+                 locationTo: locationTo,
+                 numRiders: 1,
+                 status: "Matched",
+                 timeEnd: dateEndGMT,
+                 timeStart: dateStartGMT,
+               });
+               //adjust old requests to matched
+                set(ref(db, 'requests/' + potentialMatches[0][2]), {
+                  email: potentialMatches[0][0].email,
+                  locationFrom: potentialMatches[0][0].locationFrom,
+                  locationTo: potentialMatches[0][0].locationTo,
+                  numRiders: 1,
+                  status: "Matched",
+                  timeEnd: potentialMatches[0][0].timeEnd,
+                  timeStart: potentialMatches[0][0].timeStart,
+                });
+                if (potentialMatches.length == 2) {
+                  set(ref(db, 'requests/' + potentialMatches[1][2]), {
+                    email: potentialMatches[1][0].email,
+                    locationFrom: potentialMatches[1][0].locationFrom,
+                    locationTo: potentialMatches[1][0].locationTo,
+                    numRiders: 1,
+                    status: "Matched",
+                    timeEnd: potentialMatches[1][0].timeEnd,
+                    timeStart: potentialMatches[1][0].timeStart,
+                  });
+                }
+      }
+      else {
+        set(ref(db, 'requests/' + currMaxId), {
+          email: email,
+          locationFrom: locationFrom,
+          locationTo: locationTo,
+          numRiders: 1,
+          status: "Pending",
+          timeEnd: dateEndGMT,
+          timeStart: dateStartGMT,
+      });
+      } 
       
-      }
-      }
-      const matchFrom = gameSnapshot["requests"][i].locationFrom;
       
       // push new matches and request to Firebase
     }

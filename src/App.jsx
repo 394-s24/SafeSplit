@@ -72,7 +72,7 @@ const App = () => {
     matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   })
   // Accessing just the rider1 field from the first object in gameSnapshot
-
+  // console.log(gameSnapshot)
   return (
     <div className='App'>
       <Tabs
@@ -132,8 +132,8 @@ const App = () => {
       </Tabs>
 
       {/* Change passed currMaxID when we account for requests deletion */}
-      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} data={gameSnapshot} />
-      <RideForm currMaxMatchID={Object.keys(gameSnapshot["Matches"]).length} data={gameSnapshot} />
+      {/* <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} data={gameSnapshot} /> */}
+      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} currMaxMatchID={Object.keys(gameSnapshot["matches"]).length} data={gameSnapshot} />
     </div>
   );
 };

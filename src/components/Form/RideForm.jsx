@@ -8,11 +8,11 @@ import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 
 import "./RideForm.css"
-import { i } from 'vitest/dist/reporters-P7C2ytIv';
+// import { i } from 'vitest/dist/reporters-P7C2ytIv';
 
 
 
-const RideForm = ({currMaxId, data, currMaxMatchId}) => {
+const RideForm = ({currMaxId, currMaxMatchId, data}) => {
   const [locationFrom, setLocationFrom] = useState("")
   const [locationTo, setLocationTo] = useState("")
   const [email, setEmail] = useState("")
@@ -47,7 +47,7 @@ const RideForm = ({currMaxId, data, currMaxMatchId}) => {
 
   function runAlgorithm(event, data, newRequest) {
       event.preventDefault() // prevent refresh
-      console.log("Running Algorithm")
+    console.log("Running Algorithm")
 
       const dateStartGMT = dateStart +  3600;
       const dateEndGMT = dateEnd + 3600;
@@ -166,7 +166,7 @@ const RideForm = ({currMaxId, data, currMaxMatchId}) => {
           <h5>Need a ride? Fill out the form below to connect with a fellow student heading your way!</h5>
         </div>
         <div id = "form-body">
-          <Form onSubmit = {(e) => firebaseTest(e)}> 
+          <Form onSubmit = {(e) => runAlgorithm(e)}> 
           <h4 >Pickup Location</h4>
             <Form.Select
               name="pickup-location"

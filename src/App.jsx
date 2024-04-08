@@ -27,26 +27,31 @@ const App = () => {
 
   var reqData = Array();
   // fixed for nonconsecutive indices
-// for (let i = 0; i < Object.keys(gameSnapshot["requests"]).length; i++) {
-  Object.keys(gameSnapshot["requests"]).forEach((i) => {
+  for (let i = 0; i < Object.keys(gameSnapshot["requests"]).length; i++) {
+
+  // Object.keys(gameSnapshot["requests"]).forEach((i) => {
     if (gameSnapshot["requests"][i].email == user) {
       const matchFrom = gameSnapshot["requests"][i].locationFrom;
       const matchTo = gameSnapshot["requests"][i].locationTo;
       const numRiders = gameSnapshot["requests"][i].numRiders;
-      const matchTimeStart = gameSnapshot["matches"][i].timeStart;
+      const matchTimeStart = gameSnapshot["requests"][i].timeStart;
       var matchStart = new Date(matchTimeStart * 1000).toLocaleString();
-      const matchTimeEnd = gameSnapshot["matches"][i].timeEnd;
+      // var matchStart = new Date(matchTimeStart ).toLocaleString();
+
+      const matchTimeEnd = gameSnapshot["requests"][i].timeEnd;
       var matchEnd = new Date(matchTimeEnd * 1000).toLocaleString();
+      // var matchEnd = new Date(matchTimeEnd).toLocaleString();
+
       const status = gameSnapshot["requests"][i].status;
       reqData.push([matchStart, matchEnd, matchFrom, matchTo, user, numRiders, status])
     }
     reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-  })
+  }
   
   var matchData = Array()
   // fixed for nonconsecutive indices
-  // for (let i = 0; i < Object.keys(gameSnapshot["matches"]).length; i++) {
-  Object.keys(gameSnapshot["matches"]).forEach((i) => {
+  for (let i = 0; i < Object.keys(gameSnapshot["matches"]).length; i++) {
+  // Object.keys(gameSnapshot["matches"]).forEach((i) => {
 
     let riderArr = Array();
     if (gameSnapshot["matches"][i].rider1 != undefined) {
@@ -70,7 +75,7 @@ const App = () => {
     }
 
     matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-  })
+  }
   // Accessing just the rider1 field from the first object in gameSnapshot
   // console.log(gameSnapshot)
   return (
@@ -82,7 +87,7 @@ const App = () => {
       >
         <Tab eventKey="request" title="Request">
           {reqData.map(item => (
-            <Card style={{ width: '30rem' }}>
+            <Card style={{ width: '35%' }}>
               <Card.Body>
                 <Card.Title>Request</Card.Title>
 
@@ -103,7 +108,7 @@ const App = () => {
         </Tab>
         <Tab eventKey="matches" title="Matches">
           {matchData.map(item => (
-            <Card style={{ width: '30rem' }}>
+            <Card style={{ width: '35%' }}>
               <Card.Body>
                 <Card.Title>Match</Card.Title>
 

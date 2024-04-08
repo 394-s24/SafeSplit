@@ -22,6 +22,8 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
   const dbRef = ref(db);
   console.log(data)
   console.log(currMaxId)
+  console.log(locationFrom)
+  console.log(locationTo)
   console.log(dateStart)
   console.log(dateEnd)
 
@@ -45,12 +47,12 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
 
   }
 
-  function runAlgorithm(event, data, newRequest) {
+  function runAlgorithm(event) {
       event.preventDefault() // prevent refresh
-    console.log("Running Algorithm")
+      console.log("Running Algorithm")
 
-      const dateStartGMT = dateStart +  3600;
-      const dateEndGMT = dateEnd + 3600;
+      const dateStartGMT = Math.floor(dateStart.getTime() / 1000) + 3600;
+      const dateEndGMT = Math.floor(dateEnd.getTime() / 1000) + 3600;
 
       // run algorithm here
       var matched = 0;
@@ -58,9 +60,9 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
       const requests = data["requests"];
       for (let i = 0; i < Object.keys(requests).length; i++ ) {
         const currentRequest = requests[i];
-        if (!currentRequest.status.equals("Matched")) {
-          if (locationTo.equals(currentRequest.locationTo) &&
-              locationFrom.equals(currentRequest.locationFrom))
+        if (!currentRequest.status == "Matched") {
+          if (locationTo == currentRequestlocationTo &&
+              locationFrom==currentRequest.locationFromp)
             {
             //if locationTo and locationFrom == that of the request, then check if times intersect
               if (!(dateStartGMT > currentRequest.timeEnd || dateEndGMT < currentRequest.timeStart)) 
@@ -141,7 +143,7 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
       }
       else {
         set(ref(db, 'requests/' + currMaxId), {
-          email: email,
+          email: "johnsmith@gmail.com",
           locationFrom: locationFrom,
           locationTo: locationTo,
           numRiders: 1,
@@ -166,7 +168,7 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
           <h5>Need a ride? Fill out the form below to connect with a fellow student heading your way!</h5>
         </div>
         <div id = "form-body">
-          <Form onSubmit = {(e) => runAlgorithm(e)}> 
+          <Form onSubmit = {(e) => runAlgorithm(e, {})}> 
           <h4 >Pickup Location</h4>
             <Form.Select
               name="pickup-location"

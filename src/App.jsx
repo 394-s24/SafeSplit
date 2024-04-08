@@ -26,7 +26,9 @@ const App = () => {
   const user = "johnsmith@gmail.com";
 
   var reqData = Array();
-  for (let i = 0; i < Object.keys(gameSnapshot["requests"]).length; i++) {
+  // fixed for nonconsecutive indices
+// for (let i = 0; i < Object.keys(gameSnapshot["requests"]).length; i++) {
+  Object.keys(gameSnapshot["requests"]).forEach((i) => {
     if (gameSnapshot["requests"][i].email == user) {
       const matchFrom = gameSnapshot["requests"][i].locationFrom;
       const matchTo = gameSnapshot["requests"][i].locationTo;
@@ -39,10 +41,13 @@ const App = () => {
       reqData.push([matchStart, matchEnd, matchFrom, matchTo, user, numRiders, status])
     }
     reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-  }
+  })
   
   var matchData = Array()
-  for (let i = 0; i < Object.keys(gameSnapshot["matches"]).length; i++) {
+  // fixed for nonconsecutive indices
+  // for (let i = 0; i < Object.keys(gameSnapshot["matches"]).length; i++) {
+  Object.keys(gameSnapshot["matches"]).forEach((i) => {
+
     let riderArr = Array();
     if (gameSnapshot["matches"][i].rider1 != undefined) {
       riderArr.push(gameSnapshot["matches"][i].rider1);
@@ -64,12 +69,12 @@ const App = () => {
       matchData.push([matchStart, matchEnd, matchFrom, matchTo, riderArr]);
     }
 
-    matchData.sort();
-  }
+    matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+  })
   // Accessing just the rider1 field from the first object in gameSnapshot
 
   return (
-    <div>
+    <div className='App'>
       <Tabs
         defaultActiveKey="request"
         id="uncontrolled-tab-example"
@@ -127,7 +132,7 @@ const App = () => {
       </Tabs>
 
       {/* Change passed currMaxID when we account for requests deletion */}
-      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} />
+      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} data={gameSnapshot} />
     </div>
   );
 };

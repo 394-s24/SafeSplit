@@ -1,0 +1,21 @@
+#form-container {
+    border-radius: 20px;
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  /* #form-container div {
+    width: 50%;
+    padding: 5%;
+    min-width: 350px;
+  } */
+  
+  #request-form .request-form-entry {
+    margin-top: 15px; 
+  }
+  
+  .center-item{
+      display: flex;
+      justify-content: center;
+  }

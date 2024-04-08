@@ -1,29 +1,160 @@
-import React from 'react'
-import { Button } from 'react-bootstrap'
+import React, {useState} from 'react'
+import { Button, Form } from 'react-bootstrap'
 import { db } from '../../FireBase'
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, set } from "firebase/database";
+
+import DateTimePicker from 'react-datetime-picker';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+
+import "./RideForm.css"
 
 
-const RideForm = ({currMaxId}) => {
 
-    const dbRef = ref(db);
-    // set(ref(dbRef, 'requests'), 
-    // {})
+const RideForm = ({currMaxId, data}) => {
+  const [locationFrom, setLocationFrom] = useState("")
+  const [locationTo, setLocationTo] = useState("")
+  const [email, setEmail] = useState("")
+  const [dateStart, setDateStart] = useState(new Date());
+  const [dateEnd, setDateEnd] = useState(new Date());
 
-    console.log(currMaxId)
+  const dbRef = ref(db);
+  console.log(data)
+  console.log(currMaxId)
+  console.log(dateStart)
+  console.log(dateEnd)
 
-    function runAlgorithm () {
-        console.log("Running Algorithm")
-        preventDefault()
+  function firebaseTest(event) {
+    event.preventDefault(); // prevent refresh
+    console.log(locationFrom);
+    console.log(locationTo);
+
+    // // this is working to push to firebase
+    // // currMaxId MUST be unique
+    // set(ref(db, 'matches/' + 100), {
+    //   locationFrom: "Tech",
+    //   locationTo: "OHare",
+    //   rider1: "johnnyappleseed@gmail.com",
+    //   rider2: "gracehopper@gmail.com",
+    //   rider3: "",
+    //   timeEnd: 1712545200,
+    //   timeStart: 1712541600 
+    // })
+    
+
+  }
+
+  function runAlgorithm(event, data, newRequest) {
+      event.preventDefault() // prevent refresh
+      console.log("Running Algorithm")
+
+      const dateStartGMT = dateStart +  3600;
+      const dateEndGMT = dateEnd + 3600;
+
+      // run algorithm here
+      var matched = 0;
+      var potentialMatches = new Array();
+      const requests = data["requests"];
+      for (let i = 0; i < Object.keys(requests).length; i++ ) {
+        const currentRequest = requests[i];
+        if (!currentRequest.status.equals("Matched")) {
+          if (locationTo.equals(currentRequest.locationTo) &&
+              locationFrom.equals(currentRequest.locationFrom))
+            {
+            //if locationTo and locationFrom == that of the request, then check if times intersect
+              if (!(dateStartGMT > currentRequest.timeEnd || dateEndGMT < currentRequest.timeStart)) 
+                {
+                  var intersection = Math.min(timeEnd, currentRequest.timeEnd) - Math.max(timeStart, currentRequest.timeStart);
+                  if (potentialMatches != 2) {
+                    potentialMatches.push([currentRequest, intersection]);
+                  }
+                  else {
+                    var smallestValue = potentialMatches[0][1];
+                    var smallestIndex = 0;
+                    for (let i = 0; i < 2; i++){
+                      if (smallestValue > potentialMatches[i][1]){
+                        smallestValue = potentialMatches[i][1];
+                        smallestIndex = i;
+                      }
+                    }
+                    if (smallestValue < intersection) {
+                      potentialMatches[smallestIndex] = [currentRequest, intersection];
+                    }
+                    });
+                      
+                    });
+                  }
+                }
+            {
+              //it's a match
+              matched++;
+              
+            }
+            
+            }
+      
+      }
+      }
+      const matchFrom = gameSnapshot["requests"][i].locationFrom;
+      
+      // push new matches and request to Firebase
     }
+  
+  
+    
 
   return (
-    <form onSubmit = {runAlgorithm}>
-         <Button variant="light" type = "submit">Light</Button>{' '}
-    </form>
-    
+    <div className='center-item'>
+      <div id='form-container'>
+        <div id = "form-header"> 
+          <h1>Request a New Match</h1>
+          <h5>Need a ride? Fill out the form below to connect with a fellow student heading your way!</h5>
+        </div>
+        <div id = "form-body">
+          <Form onSubmit = {(e) => firebaseTest(e)}> 
+          <h4 >Pickup Location</h4>
+            <Form.Select
+              name="pickup-location"
+              className="request-form-entry"
+              aria-label="Default select example"
+              onChange={(e) => setLocationFrom(e.target.value)}
+            >
+              <option>Select Pickup Location</option>
+              <option value="Allison">Allison</option>
+              <option value="Tech">Tech</option>
+              <option value="Lincoln">Lincoln</option>
+            </Form.Select>
+            <h4 className="request-form-entry">Dropoff Location</h4>
+            <Form.Select
+              name="dropoff-location"
+              className="request-form-entry"
+              aria-label="Default select example"
+              onChange={(e) => setLocationTo(e.target.value)}
+            >
+              <option>Select Destination</option>
+              <option value="OHare">OHare</option>
+              <option value="Midway">Midway</option>
+            </Form.Select>
+            <h4 className="request-form-entry">Time Begin</h4> 
+            <div>
+              <DateTimePicker disableClock={true} value={dateStart}  onChange={(dateStart) => setDateStart(dateStart)} />
+            </div>
+            <h4 className="request-form-entry">Time End</h4> 
+            <div>
+              <DateTimePicker disableClock={true} value={dateEnd} onChange={(dateEnd) => setDateEnd(dateEnd)} />
+            </div>
+            <Button
+              className="request-form-entry"
+              variant="light"
+              type="submit"
+            >
+              Place Request
+            </Button>{" "}
+          </Form>
+        </div>
+      </div>
+    </div>
   )
-
 }
 
 export default RideForm

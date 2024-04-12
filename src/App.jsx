@@ -43,7 +43,7 @@ const App = () => {
       // var matchEnd = new Date(matchTimeEnd).toLocaleString();
 
       const status = gameSnapshot["requests"][i].status;
-      reqData.push([matchStart, matchEnd, matchFrom, matchTo, user, numRiders, status])
+      reqData.push([matchStart, matchEnd, matchFrom, matchTo, user, numRiders, status, i+1])
     }
     reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   }
@@ -71,7 +71,7 @@ const App = () => {
       const matchTimeEnd = gameSnapshot["matches"][i].timeEnd;
       var matchEnd = new Date(matchTimeEnd * 1000).toLocaleString();
       // matchData.push([riderArr, matchFrom, matchTo, matchStart, matchEnd])
-      matchData.push([matchStart, matchEnd, matchFrom, matchTo, riderArr]);
+      matchData.push([matchStart, matchEnd, matchFrom, matchTo, riderArr, i+1]);
     }
 
     matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
@@ -89,7 +89,7 @@ const App = () => {
           {reqData.map(item => (
             <Card style={{ width: '35%' }}>
               <Card.Body>
-                <Card.Title>Request</Card.Title>
+                <Card.Title>Request #{item[7]}</Card.Title>
 
                 <Card.Subtitle className="mb-2 text-muted">{item[4]}
                 </Card.Subtitle>
@@ -110,7 +110,7 @@ const App = () => {
           {matchData.map(item => (
             <Card style={{ width: '35%' }}>
               <Card.Body>
-                <Card.Title>Match</Card.Title>
+                <Card.Title>Match #{ item[5]}</Card.Title>
 
                 <Card.Subtitle className="mb-2 text-muted">{item[4].map(rider => (<span> <a href={"mailto:" + {rider}}>{rider}</a> <br></br></span>))}
                 </Card.Subtitle>
@@ -138,7 +138,7 @@ const App = () => {
 
       {/* Change passed currMaxID when we account for requests deletion */}
       {/* <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} data={gameSnapshot} /> */}
-      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} currMaxMatchID={Object.keys(gameSnapshot["matches"]).length} data={gameSnapshot} />
+      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} currMaxMatchId={Object.keys(gameSnapshot["matches"]).length} data={gameSnapshot} />
     </div>
   );
 };

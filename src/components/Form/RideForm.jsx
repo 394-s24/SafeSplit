@@ -50,15 +50,17 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
   function runAlgorithm(event) {
       event.preventDefault() // prevent refresh
       console.log("Running Algorithm")
-
-      const dateStartGMT = Math.floor(dateStart.getTime() / 1000) + 3600;
-      const dateEndGMT = Math.floor(dateEnd.getTime() / 1000) + 3600;
+      // console.log(dateStart.toLocaleString("en-US", {timeZone: "America/Chicago"}));
+      // console.log(dateStart.toLocaleString("en-US", {timeZone: "UTC"}));
+      // console.log(Math.floor(dateStart.getTime() / 1000));
+      const dateStartGMT = Math.floor(dateStart.getTime() / 1000);
+      const dateEndGMT = Math.floor(dateEnd.getTime() / 1000);
 
       // run algorithm here
       var matched = 0;
       var potentialMatches = new Array();
       const requests = data["requests"];
-      for (let i = 0; i < Object.keys(requests).length; i++ ) {
+      for (let i = 0; i < Object.keys(requests).length; i++) {
         const currentRequest = requests[i];
         if (!currentRequest.status == "Matched") {
           if (locationTo == currentRequestlocationTo &&
@@ -90,6 +92,7 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
                   }
                 }
             }
+            console.log(potentialMatches);
             if (potentialMatches.length != 0){
               var additionalRider;
               if (potentialMatches.length == 1) {

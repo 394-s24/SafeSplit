@@ -2,6 +2,7 @@ import React from 'react'
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Card from "react-bootstrap/Card";
+import MatchCard from '../MatchCard/MatchCard';
 import './DataLogger.css'
 
 
@@ -35,19 +36,7 @@ const DataLogger = ({matchData, reqData}) => {
         </Tab>
         <Tab eventKey="matches" title="Matches">
           {matchData.map(item => (
-            <Card style={{ width: '35%' }}>
-              <Card.Body>
-                <Card.Title>Match #{ item[5]}</Card.Title>
-
-                <Card.Subtitle className="mb-2 text-muted">{item[4].map(rider => (<span> <a href={"mailto:" + {rider}}>{rider}</a> <br></br></span>))}
-                </Card.Subtitle>
-                <Card.Title>From: {item[2]}</Card.Title>
-                <Card.Title>To: {item[3]}</Card.Title>
-                <Card.Text>
-                  Time: {item[0]} - {item[1]}
-                </Card.Text>
-              </Card.Body>
-            </Card>
+            <MatchCard item = {item}/>
           ))}
           {/* <Card style={{ width: '18rem' }}>
             <Card.Body>

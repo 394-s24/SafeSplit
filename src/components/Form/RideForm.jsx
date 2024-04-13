@@ -61,7 +61,6 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
       var matched = 0;
       var potentialMatches = new Array();
       const requests = data["requests"];
-      console.log(requests)
       for (let i = 0; i < Object.keys(requests).length; i++) {
         const currentRequest = requests[i];
         if (currentRequest.status != "Matched") {
@@ -84,39 +83,31 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
            //console.log(dateStartGMT)
               var intersection = Math.min(currentRequest.requestTimeEnd, dateEndGMT) - Math.max(currentRequest.requestTimeStart, dateStartGMT);
               //console.log(currentRequest.requestTimeEnd-currentRequest.requestTimeStart)
-            if (i == 2) {
-              console.log(currentRequest.requestTimeEnd)
-              console.log(dateEndGMT)
-              console.log(intersection)
-              console.log(Math.max(currentRequest.requestTimeStart, dateStartGMT))
-              console.log(Math.min(currentRequest.requestTimeEnd, dateEndGMT))
-              }
-              console.log(dateEndGMT)
-              console.log(currentRequest.requestTimeEnd)
-              if (intersection > 0)
-                {
-                  if (potentialMatches.length != 2) {
-                    //potentialMatches is an array of arrays, where each array holds a request, the intersection time, and the index of the request
-                    potentialMatches.push([currentRequest, intersection, i]);
-                  }
-                  else {
-                    var smallestValue = potentialMatches[0][1];
-                    var smallestIndex = 0;
-                    for (let i = 0; i < 2; i++){
-                      if (smallestValue > potentialMatches[i][1]){
-                        smallestValue = potentialMatches[i][1];
-                        smallestIndex = i;
-                      }
-                    }
-                    if (smallestValue < intersection) {
-                      potentialMatches[smallestIndex] = [currentRequest, intersection, i];
-                    }
-                    };
-                      
-                    };
-                  }
+            if (intersection > 0 && currentRequest.email != email)
+              {
+                if (potentialMatches.length != 2) {
+                  //potentialMatches is an array of arrays, where each array holds a request, the intersection time, and the index of the request
+                  potentialMatches.push([currentRequest, intersection, i]);
                 }
-            }
+                else {
+                  var smallestValue = potentialMatches[0][1];
+                  var smallestIndex = 0;
+                  for (let i = 0; i < 2; i++){
+                    if (smallestValue > potentialMatches[i][1]){
+                      smallestValue = potentialMatches[i][1];
+                      smallestIndex = i;
+                    }
+                  }
+                  if (smallestValue < intersection) {
+                    potentialMatches[smallestIndex] = [currentRequest, intersection, i];
+                  }
+                  };
+                    
+                  };
+                }
+              }
+      }
+    console.log(potentialMatches)
             if (potentialMatches.length != 0){
               var additionalRider;
               if (potentialMatches.length == 1) {
@@ -175,15 +166,17 @@ const RideForm = ({currMaxId, currMaxMatchId, data}) => {
           locationTo: locationTo,
           numRiders: 1,
           status: "Pending",
-          timeEnd: dateEndGMT,
-          timeStart: dateStartGMT,
+          requestTimeEnd: dateEndGMT,
+          requestTimeStart: dateStartGMT,
       });
       }
       setLocationTo("");
       setLocationFrom("");
       setDateStart(new Date());
       setDateEnd(new Date());
-d      // push new matches and request to Firebase
+      // need to reset form to reset location fields
+      document.getElementById("request-form").reset();
+        // push new matches and request to Firebase
     }
   
   
@@ -197,7 +190,7 @@ d      // push new matches and request to Firebase
           <h5>Need a ride? Fill out the form below to connect with a fellow student heading your way!</h5>
         </div>
         <div id = "form-body">
-          <Form onSubmit = {(e) => runAlgorithm(e, {})}> 
+          <Form id="request-form" onSubmit = {(e) => runAlgorithm(e, {})}> 
           <h4 >Pickup Location</h4>
             <Form.Select
               name="pickup-location"

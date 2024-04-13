@@ -29,17 +29,17 @@ const App = () => {
   // fixed for nonconsecutive indices
   for (let i = 0; i < Object.keys(gameSnapshot["requests"]).length; i++) {
 
-  // Object.keys(gameSnapshot["requests"]).forEach((i) => {
+    // Object.keys(gameSnapshot["requests"]).forEach((i) => {
     if (gameSnapshot["requests"][i].email == user) {
       const matchFrom = gameSnapshot["requests"][i].locationFrom;
       const matchTo = gameSnapshot["requests"][i].locationTo;
       const numRiders = gameSnapshot["requests"][i].numRiders;
-      const matchTimeStart = gameSnapshot["requests"][i].timeStart;
+      const matchTimeStart = gameSnapshot["requests"][i].requestTimeStart;
       var matchStart = new Date(matchTimeStart * 1000).toLocaleString();
       // var matchStart = new Date(matchTimeStart ).toLocaleString();
 
-      const matchTimeEnd = gameSnapshot["requests"][i].timeEnd;
-      var matchEnd = new Date(matchTimeEnd * 1000).toLocaleString();
+      const matchTimeEnd = gameSnapshot["requests"][i].requestTimeEnd;
+      var matchEnd = new Date(matchTimeEnd*1000).toLocaleString();
       // var matchEnd = new Date(matchTimeEnd).toLocaleString();
 
       const status = gameSnapshot["requests"][i].status;

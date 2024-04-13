@@ -1,0 +1,114 @@
+{
+  "matches": {
+    "0": {
+      "locationFrom": "Tech",
+      "locationTo": "OHare",
+      "rider1": "janedoe@gmail.com",
+      "rider2": "johnsmith@gmail.com",
+      "rider3": "",
+      "timeEnd": "1712264400", 
+      "timeStart": "1712260800" 
+    }
+  },
+  "requests": {
+    "0": {
+      "email": "johnsmith@gmail.com",
+        "locationFrom": "Tech",
+      "locationTo": "O'Hare",
+      "numRiders": 1,
+      "requestTimeEnd": "1712264400", 
+      "requestTimeStart": "1712257200", 
+      "status": "Matched"
+    },
+    "1":{
+      "email": "janedoe@gmail.com",
+      "locationFrom": "Tech",
+      "locationTo": "OHare",
+      "numRiders": 1,
+      "requestTimeEnd": "1712268000",
+      "requestTimeStart": "1712260800",
+      "status": "Matched"
+    },
+    "2": {
+      "email": "stevejobs@gmail.com",
+      "locationFrom": "Tech",
+      "locationTo": "OHare",
+      "numRiders": 1,
+      "requestTimeEnd": "1712689200",
+      "requestTimeStart": "1712682000",
+      "status": "Pending"
+    },
+    "3": {
+        "email": "adalovelace@gmail.com",
+        "locationFrom": "Tech",
+        "locationTo": "OHare",
+        "numRiders": 1,
+        "requestTimeEnd": "1712696400",
+        "requestTimeStart": "1712689200",
+        "status": "Pending"
+    },
+    "4": {
+        "email": "gracehopper@gmail.com",
+        "locationFrom": "Tech",
+        "locationTo": "OHare",
+        "numRiders": 1,
+        "requestTimeEnd": "1712703600",
+        "requestTimeStart": "1712696400",
+        "status": "Pending"
+    },
+    "5": {
+        "email": "alanturing@gmail.com",
+        "locationFrom": "Tech",
+        "locationTo": "OHare",
+        "numRiders": 1,
+        "requestTimeEnd": "1712710800",
+        "requestTimeStart": "1712703600",
+        "status": "Pending"
+    },
+    "6": {
+        "email": "mortyschapiro@gmail.com",
+        "locationFrom": "Lincoln",
+        "locationTo": "OHare",
+        "numRiders": 1,
+        "requestTimeEnd": "1712689200",
+        "requestTimeStart": "1712682000",
+        "status": "Pending"
+      },
+      "7": {
+          "email": "shirleyryan@gmail.com",
+          "locationFrom": "Lincoln",
+          "locationTo": "OHare",
+          "numRiders": 1,
+          "requestTimeEnd": "1712696400",
+          "requestTimeStart": "1712689200",
+          "status": "Pending"
+      },
+      "8": {
+          "email": "patrickryan@gmail.com",
+          "locationFrom": "Lincoln",
+          "locationTo": "OHare",
+          "numRiders": 1,
+          "requestTimeEnd": "1712703600",
+          "requestTimeStart": "1712696400",
+          "status": "Pending"
+      },
+      "9": {
+          "email": "seelymudd@gmail.com",
+          "locationFrom": "Lincoln",
+          "locationTo": "OHare",
+          "numRiders": 1,
+          "requestTimeEnd": "1712710800",
+          "requestTimeStart": "1712703600",
+          "status": "Pending"
+      },
+      "10": {
+        "email": "johnnyappleseed@gmail.com",
+        "locationFrom": "Allison",
+        "locationTo": "OHare",
+        "numRiders": 1,
+        "requestTimeEnd": "1712689200",
+        "requestTimeStart": "1712682000",
+        "status": "Pending"
+    }
+}
+}

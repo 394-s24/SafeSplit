@@ -78,11 +78,10 @@ const App = () => {
   // console.log(gameSnapshot)
   return (
     <div className='App'>
-
+      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} currMaxMatchId={Object.keys(gameSnapshot["matches"]).length} data={gameSnapshot} />
       <DataLogger reqData={reqData} matchData={matchData}/>
 
       {/* Change passed currMaxID when we account for requests deletion */}
-      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} currMaxMatchId={Object.keys(gameSnapshot["matches"]).length} data={gameSnapshot} />
     </div>
   );
 };

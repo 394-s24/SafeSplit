@@ -35,8 +35,8 @@ const DataLogger = ({matchData, reqData}) => {
       ))}
     </Tab>
     <Tab eventKey="matches" title="Matches">
-      {matchData.map(item => (
-        <MatchCard item = {item}/>
+      {matchData.map(match => (
+        <MatchCard match = {match}/>
       ))}
       {/* <Card style={{ width: '18rem' }}>
         <Card.Body>

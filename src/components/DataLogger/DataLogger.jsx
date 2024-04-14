@@ -1,44 +1,31 @@
-import React from 'react'
+import React from "react";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Card from "react-bootstrap/Card";
-import MatchCard from '../MatchCard/MatchCard';
-import './DataLogger.css'
+import MatchCard from "../MatchCard/MatchCard";
+import ReactDatePicker from "react-datepicker";
+import "./DataLogger.css";
+import RequestCard from "../RequestCard/RequestCard";
 
-
-const DataLogger = ({matchData, reqData}) => {
+const DataLogger = ({ matchData, reqData }) => {
   return (
-    <div id = "DataLogger"> <Tabs
-    defaultActiveKey="request"
-    id="uncontrolled-tab-example"
-    className="mb-3"
-  >
-    <Tab eventKey="request" title="Request">
-      {reqData.map(item => (
-        <Card style={{ width: '35%' }}>
-          <Card.Body>
-            <Card.Title>Request #{item[7]}</Card.Title>
-
-            <Card.Subtitle className="mb-2 text-muted">{item[4]}
-            </Card.Subtitle>
-            <Card.Subtitle className="mb-2 text-muted">Riders: {item[5]}
-            </Card.Subtitle>
-            <Card.Title>From: {item[2]}</Card.Title>
-            <Card.Title>To: {item[3]}</Card.Title>
-            <Card.Text>
-              Time: {item[0]} - {item[1]}
-            </Card.Text>
-            <Card.Subtitle className="mb-2 text-muted">Status: {item[6]}
-            </Card.Subtitle>
-          </Card.Body>
-        </Card>
-      ))}
-    </Tab>
-    <Tab eventKey="matches" title="Matches">
-      {matchData.map(match => (
-        <MatchCard match = {match}/>
-      ))}
-      {/* <Card style={{ width: '18rem' }}>
+    <div id="DataLogger">
+      {" "}
+      <Tabs
+        defaultActiveKey="request"
+        id="uncontrolled-tab-example"
+        className="mb-3"
+      >
+        <Tab eventKey="request" title="Request">
+          {reqData.map((request) => (
+            <RequestCard request={request} />
+          ))}
+        </Tab>
+        <Tab eventKey="matches" title="Matches">
+          {matchData.map((match) => (
+            <MatchCard match={match} />
+          ))}
+          {/* <Card style={{ width: '18rem' }}>
         <Card.Body>
           <Card.Title>Match #1</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">{rider1}, {rider2}</Card.Subtitle>
@@ -49,10 +36,10 @@ const DataLogger = ({matchData, reqData}) => {
           </Card.Text>
         </Card.Body>
       </Card> */}
-    </Tab>
-  </Tabs> </div>
-    
-  )
-}
+        </Tab>
+      </Tabs>{" "}
+    </div>
+  );
+};
 
-export default DataLogger
+export default DataLogger;

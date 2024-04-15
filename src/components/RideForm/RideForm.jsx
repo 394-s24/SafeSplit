@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { db } from "../../FireBase";
+import { db } from "../../utilities/FireBase";
 import { ref, onValue, set } from "firebase/database";
 
 import DateTimePicker from "react-datetime-picker";
@@ -57,10 +57,17 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
     var matched = 0;
     var potentialMatches = new Array();
     const requests = data["requests"];
+    
+    
+    // for every request
     for (let i = 0; i < Object.keys(requests).length; i++) {
       const currentRequest = requests[i];
+
+      // if the current request is not matched
       if (currentRequest.status != "Matched") {
         console.log(currentRequest);
+
+        // if its a valid request
         if (
           locationTo == currentRequest.locationTo &&
           locationFrom == currentRequest.locationFrom

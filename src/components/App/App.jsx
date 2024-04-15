@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { db } from "../../FireBase.js";
+import { db } from "../../utilities/FireBase.js";
 import { ref, onValue } from "firebase/database";
 import { useEffect } from "react";
-import RideForm from "../Form/RideForm.jsx";
+import RideForm from "../RideForm/RideForm.jsx";
 import DataLogger from "../DataLogger/DataLogger.jsx";
 import { Container, Spinner, Row } from "react-bootstrap";
 import "./App.css";

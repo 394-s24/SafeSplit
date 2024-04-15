@@ -25,17 +25,6 @@ const DataLogger = ({ matchData, reqData }) => {
           {matchData.map((match) => (
             <MatchCard match={match} />
           ))}
-          {/* <Card style={{ width: '18rem' }}>
-        <Card.Body>
-          <Card.Title>Match #1</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">{rider1}, {rider2}</Card.Subtitle>
-          <Card.Title>From: {matchFrom}</Card.Title>
-          <Card.Title>To: {matchTo}</Card.Title>
-          <Card.Text>
-            Time: {matchStart} <br></br> {matchEnd}
-          </Card.Text>
-        </Card.Body>
-      </Card> */}
         </Tab>
       </Tabs>{" "}
     </div>

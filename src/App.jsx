@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { db } from './FireBase.js';
+import { useState } from "react";
+import { db } from "./FireBase.js";
 import { ref, onValue } from "firebase/database";
 import { useEffect } from "react";
 import RideForm from "./components/Form/RideForm.jsx";
 import DataLogger from "./components/DataLogger/DataLogger.jsx";
+import { Container, Spinner, Row } from "react-bootstrap";
 
-import './App.css';
+import "./App.css";
 
 const App = () => {
   const [gameSnapshot, setGameSnapshot] = useState();
@@ -18,7 +19,15 @@ const App = () => {
 
   // Make sure gameSnapshot has loaded and contains data
   if (!gameSnapshot) {
-    return <div>Loading...</div>;
+    return (
+      <Container className="spinner-container">
+        <Row>
+          <Spinner animation="border" role="primary">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </Row>
+      </Container>
+    );
   }
 
   const user = "johnsmith@gmail.com";
@@ -26,7 +35,6 @@ const App = () => {
   var reqData = Array();
   // fixed for nonconsecutive indices
   for (let i = 0; i < Object.keys(gameSnapshot["requests"]).length; i++) {
-
     // Object.keys(gameSnapshot["requests"]).forEach((i) => {
     if (gameSnapshot["requests"][i].email == user) {
       const matchFrom = gameSnapshot["requests"][i].locationFrom;
@@ -37,19 +45,28 @@ const App = () => {
       // var matchStart = new Date(matchTimeStart ).toLocaleString();
 
       const matchTimeEnd = gameSnapshot["requests"][i].requestTimeEnd;
-      var matchEnd = new Date(matchTimeEnd*1000).toLocaleString();
+      var matchEnd = new Date(matchTimeEnd * 1000).toLocaleString();
       // var matchEnd = new Date(matchTimeEnd).toLocaleString();
 
       const status = gameSnapshot["requests"][i].status;
-      reqData.push([matchStart, matchEnd, matchFrom, matchTo, user, numRiders, status, i+1])
+      reqData.push([
+        matchStart,
+        matchEnd,
+        matchFrom,
+        matchTo,
+        user,
+        numRiders,
+        status,
+        i + 1,
+      ]);
     }
     reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   }
-  
-  var matchData = Array()
+
+  var matchData = Array();
   // fixed for nonconsecutive indices
   for (let i = 0; i < Object.keys(gameSnapshot["matches"]).length; i++) {
-  // Object.keys(gameSnapshot["matches"]).forEach((i) => {
+    // Object.keys(gameSnapshot["matches"]).forEach((i) => {
 
     let riderArr = Array();
     if (gameSnapshot["matches"][i].rider1 != undefined) {
@@ -69,7 +86,14 @@ const App = () => {
       const matchTimeEnd = gameSnapshot["matches"][i].timeEnd;
       var matchEnd = new Date(matchTimeEnd * 1000).toLocaleString();
       // matchData.push([riderArr, matchFrom, matchTo, matchStart, matchEnd])
-      matchData.push([matchStart, matchEnd, matchFrom, matchTo, riderArr, i+1]);
+      matchData.push([
+        matchStart,
+        matchEnd,
+        matchFrom,
+        matchTo,
+        riderArr,
+        i + 1,
+      ]);
     }
 
     matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
@@ -77,12 +101,14 @@ const App = () => {
   // Accessing just the rider1 field from the first object in gameSnapshot
   // console.log(gameSnapshot)
   return (
-    <div className='App'>
-      <RideForm currMaxId={Object.keys(gameSnapshot["requests"]).length} currMaxMatchId={Object.keys(gameSnapshot["matches"]).length} data={gameSnapshot} />
-      <DataLogger reqData={reqData} matchData={matchData}/>
-
-      {/* Change passed currMaxID when we account for requests deletion */}
-    </div>
+    <Container>
+      <RideForm
+        currMaxId={Object.keys(gameSnapshot["requests"]).length}
+        currMaxMatchId={Object.keys(gameSnapshot["matches"]).length}
+        data={gameSnapshot}
+      />
+      <DataLogger reqData={reqData} matchData={matchData} />
+    </Container>
   );
 };
 

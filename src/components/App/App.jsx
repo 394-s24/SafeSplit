@@ -64,8 +64,15 @@ const App = () => {
   var matchData = Array();
   // fixed for nonconsecutive indices
   for (let i = 0; i < Object.keys(FirebaseData["matches"]).length; i++) {
-    const { locationFrom, locationTo, rider1, rider2, rider3 } =
-      FirebaseData["matches"][i];
+    const {
+      timeStart,
+      timeEnd,
+      locationFrom,
+      locationTo,
+      rider1,
+      rider2,
+      rider3,
+    } = FirebaseData["matches"][i];
 
     let riderArr = Array();
 
@@ -74,8 +81,8 @@ const App = () => {
     rider3 ? riderArr.push(rider3) : null;
 
     if (riderArr.includes(user)) {
-      var matchStart = new Date(currentMatch.timeStart * 1000).toLocaleString();
-      var matchEnd = new Date(currentMatch.timeEnd * 1000).toLocaleString();
+      var matchStart = new Date(timeStart * 1000).toLocaleString();
+      var matchEnd = new Date(timeEnd * 1000).toLocaleString();
       matchData.push([
         matchStart,
         matchEnd,

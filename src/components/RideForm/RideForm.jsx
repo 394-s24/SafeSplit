@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { Button, Form } from "react-bootstrap";
 import { db } from "../../utilities/FireBase";
 import { ref, onValue, set } from "firebase/database";
-
-import DateTimePicker from "react-datetime-picker";
-import "react-datetime-picker/dist/DateTimePicker.css";
-import "react-calendar/dist/Calendar.css";
-
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
 import "./RideForm.css";
-// import { i } from 'vitest/dist/reporters-P7C2ytIv';
+import DateTimePicker from "react-datetime-picker";
 
 const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   const [locationFrom, setLocationFrom] = useState("");
@@ -16,6 +15,18 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   const [email, setEmail] = useState("");
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
+
+  const [validated, setValidated] = useState(false);
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true);
+  };
 
   const dbRef = ref(db);
   // console.log(data)
@@ -57,8 +68,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
     var matched = 0;
     var potentialMatches = new Array();
     const requests = data["requests"];
-    
-    
+
     // for every request
     for (let i = 0; i < Object.keys(requests).length; i++) {
       const currentRequest = requests[i];
@@ -185,78 +195,211 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   }
 
   return (
-    <div className="center-item">
-      <div id="form-container">
-        <div id="form-header-container">
-          <div id="form-header">
-            <h1>Request a New Match</h1>
-            <h5>
-              Need a ride? Fill out the form below to connect with a fellow
-              student heading your way!
-            </h5>
+    <>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        <Row className="mb-3">
+          <Form.Group as={Col} md="4" controlId="validationCustom01">
+            <Form.Label>First name</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="First name"
+              defaultValue="Mark"
+            />
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group as={Col} md="4" controlId="validationCustom02">
+            <Form.Label>Last name</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Last name"
+              value = ""
+            />
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <Row className="mb-3">
+          <Form.Group as={Col} md="6" controlId="validationCustom03">
+            <Form.Label>City</Form.Label>
+            <Form.Control type="text" placeholder="City" required />
+            <Form.Control.Feedback type="invalid">
+              Please provide a valid city.
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group as={Col} md="3" controlId="validationCustom04">
+            <Form.Label>State</Form.Label>
+            <Form.Control type="text" placeholder="State" required />
+            <Form.Control.Feedback type="invalid">
+              Please provide a valid state.
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group as={Col} md="3" controlId="validationCustom05">
+            <Form.Label>Zip</Form.Label>
+            <Form.Control type="text" placeholder="Zip" required />
+            <Form.Control.Feedback type="invalid">
+              Please provide a valid zip.
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <Form.Group className="mb-3">
+          <Form.Check
+            required
+            label="Agree to terms and conditions"
+            feedback="You must agree before submitting."
+            feedbackType="invalid"
+          />
+        </Form.Group>
+        <Button type="submit">Submit form</Button>
+      </Form>
+
+      <div>
+        <div className="center-item">
+          <div id="form-container">
+            <div id="form-header-container">
+              <div id="form-header">
+                <h1>Request a New Match</h1>
+                <h5>
+                  Need a ride? Fill out the form below to connect with a fellow
+                  student heading your way!
+                </h5>
+              </div>
+            </div>
+            <div id="form-body">
+              <Form id="request-form" onSubmit={(e) => runAlgorithm(e, {})}>
+                <h4 className="request-form-entry">Pickup Location</h4>
+                <Form.Select
+                  name="pickup-location"
+                  className="request-form-entry"
+                  aria-label="Default select example"
+                  onChange={(e) => setLocationFrom(e.target.value)}
+                  required
+                >
+                  <option>Select Pickup Location</option>
+                  <option value="Allison">Allison</option>
+                  <option value="Tech">Tech</option>
+                  <option value="Lincoln">Lincoln</option>
+                </Form.Select>
+                <h4 className="request-form-entry">Dropoff Location</h4>
+                <Form.Select
+                  name="dropoff-location"
+                  className="request-form-entry"
+                  aria-label="Default select example"
+                  onChange={(e) => setLocationTo(e.target.value)}
+                  required
+                >
+                  <option>Select Destination</option>
+                  <option value="OHare">OHare</option>
+                  <option value="Midway">Midway</option>
+                </Form.Select>
+                <h4 className="request-form-entry">Time Begin</h4>
+                <div>
+                  <DateTimePicker
+                    className="request-form-entry"
+                    disableClock={true}
+                    value={dateStart}
+                    onChange={(dateStart) => setDateStart(dateStart)}
+                    required
+                  />
+                </div>
+                <h4 className="request-form-entry">Time End</h4>
+                <div>
+                  <Form.Control type="date"></Form.Control>
+                  <Form.Control type="time"></Form.Control>
+                  <DateTimePicker
+                    className="request-form-entry"
+                    disableClock={true}
+                    value={dateEnd}
+                    onChange={(dateEnd) => setDateEnd(dateEnd)}
+                    required
+                  />
+                </div>
+                <Button
+                  className="request-form-entry"
+                  variant="light"
+                  type="submit"
+                >
+                  Place Request
+                </Button>{" "}
+              </Form>
+            </div>
           </div>
         </div>
-        <div id="form-body">
-          <Form id="request-form" onSubmit={(e) => runAlgorithm(e, {})}>
-            <h4 className="request-form-entry">Pickup Location</h4>
-            <Form.Select
-              name="pickup-location"
-              className="request-form-entry"
-              aria-label="Default select example"
-              onChange={(e) => setLocationFrom(e.target.value)}
-              required
-            >
-              <option>Select Pickup Location</option>
-              <option value="Allison">Allison</option>
-              <option value="Tech">Tech</option>
-              <option value="Lincoln">Lincoln</option>
-            </Form.Select>
-            <h4 className="request-form-entry">Dropoff Location</h4>
-            <Form.Select
-              name="dropoff-location"
-              className="request-form-entry"
-              aria-label="Default select example"
-              onChange={(e) => setLocationTo(e.target.value)}
-              required
-            >
-              <option>Select Destination</option>
-              <option value="OHare">OHare</option>
-              <option value="Midway">Midway</option>
-            </Form.Select>
-            <h4 className="request-form-entry">Time Begin</h4>
-            <div>
-              <DateTimePicker
-                className="request-form-entry"
-                disableClock={true}
-                value={dateStart}
-                onChange={(dateStart) => setDateStart(dateStart)}
-                required
-              />
-            </div>
-            <h4 className="request-form-entry">Time End</h4>
-            <div>
-              {/* <Form.Control type ="date"></Form.Control>
-              <Form.Control type ="time"></Form.Control> */}
-              <DateTimePicker
-                className="request-form-entry"
-                disableClock={true}
-                value={dateEnd}
-                onChange={(dateEnd) => setDateEnd(dateEnd)}
-                required
-              />
-            </div>
-            <Button
-              className="request-form-entry"
-              variant="light"
-              type="submit"
-            >
-              Place Request
-            </Button>{" "}
-          </Form>
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default RideForm;
+
+// <div className="center-item">
+// <div id="form-container">
+//   <div id="form-header-container">
+//     <div id="form-header">
+//       <h1>Request a New Match</h1>
+//       <h5>
+//         Need a ride? Fill out the form below to connect with a fellow
+//         student heading your way!
+//       </h5>
+//     </div>
+//   </div>
+//   <div id="form-body">
+//     <Form id="request-form" onSubmit={(e) => runAlgorithm(e, {})}>
+//       <h4 className="request-form-entry">Pickup Location</h4>
+//       <Form.Select
+//         name="pickup-location"
+//         className="request-form-entry"
+//         aria-label="Default select example"
+//         onChange={(e) => setLocationFrom(e.target.value)}
+//         required
+//       >
+//         <option>Select Pickup Location</option>
+//         <option value="Allison">Allison</option>
+//         <option value="Tech">Tech</option>
+//         <option value="Lincoln">Lincoln</option>
+//       </Form.Select>
+//       <h4 className="request-form-entry">Dropoff Location</h4>
+//       <Form.Select
+//         name="dropoff-location"
+//         className="request-form-entry"
+//         aria-label="Default select example"
+//         onChange={(e) => setLocationTo(e.target.value)}
+//         required
+//       >
+//         <option>Select Destination</option>
+//         <option value="OHare">OHare</option>
+//         <option value="Midway">Midway</option>
+//       </Form.Select>
+//       <h4 className="request-form-entry">Time Begin</h4>
+//       <div>
+//         <DateTimePicker
+//           className="request-form-entry"
+//           disableClock={true}
+//           value={dateStart}
+//           onChange={(dateStart) => setDateStart(dateStart)}
+//           required
+//         />
+//       </div>
+//       <h4 className="request-form-entry">Time End</h4>
+//       <div>
+//         <Form.Control type ="date"></Form.Control>
+//         <Form.Control type ="time"></Form.Control>
+//         <DateTimePicker
+//           className="request-form-entry"
+//           disableClock={true}
+//           value={dateEnd}
+//           onChange={(dateEnd) => setDateEnd(dateEnd)}
+//           required
+//         />
+//       </div>
+//       <Button
+//         className="request-form-entry"
+//         variant="light"
+//         type="submit"
+//       >
+//         Place Request
+//       </Button>{" "}
+//     </Form>
+//   </div>
+// </div>
+// </div>

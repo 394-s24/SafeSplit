@@ -199,48 +199,68 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Row className="mb-3">
           <Form.Group as={Col} md="4" controlId="validationCustom01">
-            <Form.Label>First name</Form.Label>
-            <Form.Control
+            <Form.Label>Pickup Location</Form.Label>
+              
+            <Form.Control as="select" value={locationFrom} onChange={(e) => setLocationFrom(e.target.value)}
               required
-              type="text"
-              placeholder="First name"
-              defaultValue="Mark"
-            />
+              //type="text"
+              placeholder="Location From"
+              defaultValue="Tech">
+              <option value="">Choose...</option>
+              <option value="Allison">Allison</option>
+              <option value="Tech">Tech</option>
+              <option value="Lincoln">Lincoln</option>
+              </Form.Control>
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="4" controlId="validationCustom02">
-            <Form.Label>Last name</Form.Label>
-            <Form.Control
+            <Form.Label>Dropoff Location</Form.Label>
+            <Form.Control as="select" value={locationTo} onChange={(e) => setLocationTo(e.target.value)}
               required
-              type="text"
-              placeholder="Last name"
-              value = ""
-            />
+              //type="text"
+              placeholder="Location To"
+              defaultValue="Mark">
+              <option value="">Choose...</option>
+              <option value="Trader joes">Trader joes</option>
+              <option value="Midway">Midway</option>
+              <option value="Ohare">Ohare</option>
+              </Form.Control>
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           </Form.Group>
         </Row>
         <Row className="mb-3">
           <Form.Group as={Col} md="6" controlId="validationCustom03">
-            <Form.Label>City</Form.Label>
-            <Form.Control type="text" placeholder="City" required />
+            <Form.Label>Earliest pickup time date</Form.Label>
+            <Form.Control type="date" placeholder="City" required />
             <Form.Control.Feedback type="invalid">
               Please provide a valid city.
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3" controlId="validationCustom04">
-            <Form.Label>State</Form.Label>
-            <Form.Control type="text" placeholder="State" required />
+            <Form.Label>Earliest pickup time</Form.Label>
+            <Form.Control type="time" placeholder="State" required />
             <Form.Control.Feedback type="invalid">
               Please provide a valid state.
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group as={Col} md="3" controlId="validationCustom05">
-            <Form.Label>Zip</Form.Label>
-            <Form.Control type="text" placeholder="Zip" required />
+          
+        </Row>
+        <Row className="mb-3">
+          <Form.Group as={Col} md="6" controlId="validationCustom03">
+            <Form.Label>Latest pickup time date</Form.Label>
+            <Form.Control type="date" placeholder="City" required />
             <Form.Control.Feedback type="invalid">
-              Please provide a valid zip.
+              Please provide a valid city.
             </Form.Control.Feedback>
           </Form.Group>
+          <Form.Group as={Col} md="3" controlId="validationCustom04">
+            <Form.Label>Latest pickup time</Form.Label>
+            <Form.Control type="time" placeholder="State" required />
+            <Form.Control.Feedback type="invalid">
+              Please provide a valid state.
+            </Form.Control.Feedback>
+          </Form.Group>
+          
         </Row>
         <Form.Group className="mb-3">
           <Form.Check

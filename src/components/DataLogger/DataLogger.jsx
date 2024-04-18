@@ -16,15 +16,19 @@ const DataLogger = ({ matchData, reqData }) => {
         id="uncontrolled-tab-example"
         className="mb-3"
       >
-        <Tab eventKey="request" title="Request">
-          {reqData.map((request) => (
-            <RequestCard request={request} />
-          ))}
+        <Tab eventKey="request" title="Request" class="data-card-holder">
+          <div class="data-card-holder">
+            {reqData.map((request) => (
+              <RequestCard request={request} />
+            ))}
+          </div>
         </Tab>
         <Tab eventKey="matches" title="Matches">
-          {matchData.map((match) => (
-            <MatchCard match={match} />
-          ))}
+          <div class="data-card-holder">
+            {matchData.map((match) => (
+              <MatchCard match={match} />
+            ))}
+          </div>
         </Tab>
       </Tabs>{" "}
     </div>

@@ -8,6 +8,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import "./RideForm.css";
 import DateTimePicker from "react-datetime-picker";
+import { Container } from "react-bootstrap";
 
 const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   const [locationFrom, setLocationFrom] = useState("");
@@ -19,13 +20,14 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
     }
 
     setValidated(true);
+
   };
 
   const dbRef = ref(db);
@@ -195,158 +197,94 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   }
 
   return (
-    <>
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Row className="mb-3">
-          <Form.Group as={Col} md="4" controlId="validationCustom01">
-            <Form.Label>Pickup Location</Form.Label>
-              
-            <Form.Control as="select" value={locationFrom} onChange={(e) => setLocationFrom(e.target.value)}
-              required
-              //type="text"
-              placeholder="Location From"
-              defaultValue="Tech">
-              <option value="">Choose...</option>
-              <option value="Allison">Allison</option>
-              <option value="Tech">Tech</option>
-              <option value="Lincoln">Lincoln</option>
-              </Form.Control>
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group as={Col} md="4" controlId="validationCustom02">
-            <Form.Label>Dropoff Location</Form.Label>
-            <Form.Control as="select" value={locationTo} onChange={(e) => setLocationTo(e.target.value)}
-              required
-              //type="text"
-              placeholder="Location To"
-              defaultValue="Mark">
-              <option value="">Choose...</option>
-              <option value="Trader joes">Trader joes</option>
-              <option value="Midway">Midway</option>
-              <option value="Ohare">Ohare</option>
-              </Form.Control>
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-          </Form.Group>
-        </Row>
-        <Row className="mb-3">
-          <Form.Group as={Col} md="6" controlId="validationCustom03">
-            <Form.Label>Earliest pickup time date</Form.Label>
-            <Form.Control type="date" placeholder="City" required />
-            <Form.Control.Feedback type="invalid">
-              Please provide a valid city.
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group as={Col} md="3" controlId="validationCustom04">
-            <Form.Label>Earliest pickup time</Form.Label>
-            <Form.Control type="time" placeholder="State" required />
-            <Form.Control.Feedback type="invalid">
-              Please provide a valid state.
-            </Form.Control.Feedback>
-          </Form.Group>
-          
-        </Row>
-        <Row className="mb-3">
-          <Form.Group as={Col} md="6" controlId="validationCustom03">
-            <Form.Label>Latest pickup time date</Form.Label>
-            <Form.Control type="date" placeholder="City" required />
-            <Form.Control.Feedback type="invalid">
-              Please provide a valid city.
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group as={Col} md="3" controlId="validationCustom04">
-            <Form.Label>Latest pickup time</Form.Label>
-            <Form.Control type="time" placeholder="State" required />
-            <Form.Control.Feedback type="invalid">
-              Please provide a valid state.
-            </Form.Control.Feedback>
-          </Form.Group>
-          
-        </Row>
-        <Form.Group className="mb-3">
-          <Form.Check
-            required
-            label="Agree to terms and conditions"
-            feedback="You must agree before submitting."
-            feedbackType="invalid"
-          />
-        </Form.Group>
-        <Button type="submit">Submit form</Button>
-      </Form>
+    <Row>
+      <Col>
+        <h1>Request a New Match</h1>
+        <h5>
+          Need a ride? Fill out the form below to connect with a fellow student
+          heading your way!
+        </h5>
+      </Col>
 
-      <div>
-        <div className="center-item">
-          <div id="form-container">
-            <div id="form-header-container">
-              <div id="form-header">
-                <h1>Request a New Match</h1>
-                <h5>
-                  Need a ride? Fill out the form below to connect with a fellow
-                  student heading your way!
-                </h5>
-              </div>
-            </div>
-            <div id="form-body">
-              <Form id="request-form" onSubmit={(e) => runAlgorithm(e, {})}>
-                <h4 className="request-form-entry">Pickup Location</h4>
-                <Form.Select
-                  name="pickup-location"
-                  className="request-form-entry"
-                  aria-label="Default select example"
-                  onChange={(e) => setLocationFrom(e.target.value)}
-                  required
-                >
-                  <option>Select Pickup Location</option>
-                  <option value="Allison">Allison</option>
-                  <option value="Tech">Tech</option>
-                  <option value="Lincoln">Lincoln</option>
-                </Form.Select>
-                <h4 className="request-form-entry">Dropoff Location</h4>
-                <Form.Select
-                  name="dropoff-location"
-                  className="request-form-entry"
-                  aria-label="Default select example"
-                  onChange={(e) => setLocationTo(e.target.value)}
-                  required
-                >
-                  <option>Select Destination</option>
-                  <option value="OHare">OHare</option>
-                  <option value="Midway">Midway</option>
-                </Form.Select>
-                <h4 className="request-form-entry">Time Begin</h4>
-                <div>
-                  <DateTimePicker
-                    className="request-form-entry"
-                    disableClock={true}
-                    value={dateStart}
-                    onChange={(dateStart) => setDateStart(dateStart)}
-                    required
-                  />
-                </div>
-                <h4 className="request-form-entry">Time End</h4>
-                <div>
-                  <Form.Control type="date"></Form.Control>
-                  <Form.Control type="time"></Form.Control>
-                  <DateTimePicker
-                    className="request-form-entry"
-                    disableClock={true}
-                    value={dateEnd}
-                    onChange={(dateEnd) => setDateEnd(dateEnd)}
-                    required
-                  />
-                </div>
-                <Button
-                  className="request-form-entry"
-                  variant="light"
-                  type="submit"
-                >
-                  Place Request
-                </Button>{" "}
-              </Form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+      <Col>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Row className="mb-3">
+            <Form.Group as={Col} md="6" controlId="validationCustom01">
+              <Form.Label>Pickup Location</Form.Label>
+
+              <Form.Control
+                as="select"
+                value={locationFrom}
+                onChange={(e) => setLocationFrom(e.target.value)}
+                required
+                placeholder="Location From"
+              >
+                <option value="">Choose...</option>
+                <option value="Allison">Allison</option>
+                <option value="Tech">Tech</option>
+                <option value="Lincoln">Lincoln</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid pickup location
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="6" controlId="validationCustom02">
+              <Form.Label>Dropoff Location</Form.Label>
+              <Form.Control
+                as="select"
+                value={locationTo}
+                onChange={(e) => setLocationTo(e.target.value)}
+                required
+                placeholder="Location To"
+                defaultValue="Mark"
+              >
+                <option value="">Choose...</option>
+                <option value="Trader joes">Trader joes</option>
+                <option value="Midway">Midway</option>
+                <option value="Ohare">Ohare</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid dropoff location
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Row>
+          <Row className="mb-3">
+            <Form.Group as={Col} md="6" controlId="validationCustom03">
+              <Form.Label>Earliest pickup date</Form.Label>
+              <Form.Control type="date" placeholder="City" required />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid date.
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="6" controlId="validationCustom04">
+              <Form.Label>Earliest pickup time</Form.Label>
+              <Form.Control type="time" placeholder="State" required />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid time.
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Row>
+          <Row className="mb-3">
+            <Form.Group as={Col} md="6" controlId="validationCustom03">
+              <Form.Label>Latest pickup date</Form.Label>
+              <Form.Control type="date" placeholder="City" required />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid date
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="6" controlId="validationCustom04">
+              <Form.Label>Latest pickup time</Form.Label>
+              <Form.Control type="time" placeholder="State" required />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid time.
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Row>
+
+          <Button type="submit">Submit form</Button>
+        </Form>
+      </Col>
+    </Row>
   );
 };
 

@@ -99,12 +99,14 @@ const App = () => {
   // console.log(FirebaseData)
   return (
     <Container>
-      <RideForm
-        currMaxId={Object.keys(FirebaseData["requests"]).length}
-        currMaxMatchId={Object.keys(FirebaseData["matches"]).length}
-        data={FirebaseData}
-      />
-      <DataLogger reqData={reqData} matchData={matchData} />
+        <RideForm
+          currMaxId={Object.keys(FirebaseData["requests"]).length}
+          currMaxMatchId={Object.keys(FirebaseData["matches"]).length}
+          data={FirebaseData}
+        />
+      <Row>
+        <DataLogger reqData={reqData} matchData={matchData} />
+      </Row>
     </Container>
   );
 };

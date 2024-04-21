@@ -7,6 +7,9 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import DateTimePicker from "react-datetime-picker";
 import "./RideForm.css";
+import { useToast } from '@chakra-ui/react'
+
+
 
 const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   const [locationFrom, setLocationFrom] = useState("");
@@ -27,10 +30,12 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   // console.log(dateStart)
   // console.log(dateEnd)
 
+  const toast = useToast()
+  
+
   function firebaseTest(event) {
     event.preventDefault(); // prevent refresh
-    console.log(locationFrom);
-    console.log(locationTo);
+    console.log("firebase test")
 
     // // this is working to push to firebase
     // // currMaxId MUST be unique
@@ -60,6 +65,15 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
     else{
       let algorithmStartDate = new Date(dateStart + " " + timeStart);
       let algorithmEndDate = new Date(dateEnd + " " + timeEnd);
+
+      toast({
+        position: "top", 
+        title: "Success",
+        description: "Request successfully submitted",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      })
 
       console.log("Running Algorithm");
       // console.log(dateStart.toLocaleString("en-US", {timeZone: "America/Chicago"}));

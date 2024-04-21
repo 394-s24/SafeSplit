@@ -7,6 +7,7 @@ import DataLogger from "../DataLogger/DataLogger.jsx";
 import { Container, Spinner, Row } from "react-bootstrap";
 import "./App.css";
 
+
 const App = () => {
   const [FirebaseData, setFirebaseData] = useState();
 

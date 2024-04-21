@@ -11,10 +11,10 @@ import { useToast } from '@chakra-ui/react'
 
 
 
-const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
+const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
   const [locationFrom, setLocationFrom] = useState("");
   const [locationTo, setLocationTo] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("johnsmith@gmail.com");
   const [dateStart, setDateStart] = useState("");
   const [timeStart, setTimeStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");
@@ -68,7 +68,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
 
       toast({
         position: "top", 
-        title: "Success",
+        title: "Request Submitted",
         description: "Request successfully submitted",
         status: "success",
         duration: 9000,
@@ -105,19 +105,18 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
 
         // if the current request is not matched
         
-        if (currentRequest!=null&& currentRequest.status != "Matched") {
-          //console.log(currentRequest);
+        if (currentRequest!=null && currentRequest.status != "Matched") {
+          console.log(currentRequest);
 
+          console.log(locationTo)
+          console.log(locationFrom)
+          console.log(currentRequest.locationTo)
+          console.log(currentRequest.locationFrom) 
           // if its a valid request
           if (
             locationTo == currentRequest.locationTo &&
             locationFrom == currentRequest.locationFrom
           ) {
-            // if(i==2) {
-            //   console.log(currentRequest.requestTimeStart)
-            //   console.log(currentRequest.requestTimeEnd)
-            // }
-
             //if locationTo and locationFrom == that of the request, then check if times intersect
             //A: start date 1
             //B: End date 1
@@ -130,6 +129,10 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
               Math.min(currentRequest.requestTimeEnd, dateEndGMT) -
               Math.max(currentRequest.requestTimeStart, dateStartGMT);
             //console.log(currentRequest.requestTimeEnd-currentRequest.requestTimeStart)
+            console.log(intersection)
+            console.log(currentRequest.email)
+            console.log(email)
+
             if (intersection > 0 && currentRequest.email != email) {
               if (potentialMatches.length != 2) {
                 //potentialMatches is an array of arrays, where each array holds a request, the intersection time, and the index of the request
@@ -168,7 +171,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
         
         //add new request
         set(ref(db, "requests/" + currMaxId), {
-          email: "johnsmith@gmail.com",
+          email: email,
           locationFrom: locationFrom,
           locationTo: locationTo,
           numRiders: 1,
@@ -216,6 +219,21 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
           timeStart: dateStartGMT,
           request_ids: requests_ids
         });
+
+        setTabKey("matches")
+        setTimeout(() => {
+          toast({
+            position: "top", 
+            title: "New Match",
+            description: "Your request has been matched!",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          })
+        }, 1000);
+      
+
+
       } else {
         set(ref(db, "requests/" + currMaxId), {
           email: "johnsmith@gmail.com",
@@ -284,7 +302,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
                 <option value="">Choose...</option>
                 <option value="Trader joes">Trader joes</option>
                 <option value="Midway">Midway</option>
-                <option value="Ohare">Ohare</option>
+                <option value="OHare">OHare</option>
               </Form.Control>
               <Form.Control.Feedback type="invalid">
                 Please provide a valid dropoff location

@@ -10,6 +10,7 @@ import "./App.css";
 
 const App = () => {
   const [FirebaseData, setFirebaseData] = useState();
+  const [key, setKey] = useState('request');
 
   useEffect(() => {
     const firebaseRef = ref(db);
@@ -112,15 +113,23 @@ const App = () => {
   // console.log(FirebaseData)
   // max id for new request 
   foundMaxRequestId++
+  
   return (
     <Container>
       <RideForm
         currMaxId={foundMaxRequestId}
         currMaxMatchId={foundMaxMatchId}
         data={FirebaseData}
+        tabKey={key}
+        setTabKey = {setKey}
       />
       <Row>
-        <DataLogger reqData={reqData} matchData={matchData} />
+        <DataLogger
+          reqData={reqData}
+          matchData={matchData}
+          tabKey={key}
+          setTabKey={setKey}
+        />
       </Row>
     </Container>
   );

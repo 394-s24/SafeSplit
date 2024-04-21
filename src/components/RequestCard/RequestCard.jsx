@@ -1,5 +1,9 @@
 import React from "react";
+import { useState } from "react";
 import Card from "react-bootstrap/Card";
+import { Button } from "react-bootstrap";
+import {db} from "../../utilities/FireBase";
+import { ref, remove } from "firebase/database";
 
 const RequestCard = ({ request }) => {
   const startTime = request[0];
@@ -9,6 +13,24 @@ const RequestCard = ({ request }) => {
   const userEmail = request[4];
   const numRiders = request[5];
   const status = request[6];
+  const requestId = request[7];
+  const matchId = request[8];
+
+  const [editing, setEditing] = useState(false);
+
+  const handleDelete = () => {
+    
+    // remove the match associated with the request from db
+    console.log("deleting match", matchId);
+    remove(ref(db, 'matches/' + matchId));
+    
+    // TODO go into match and adjust associated requests
+
+    // remove the requests from db
+    console.log("deleting request", requestId);
+    remove(ref(db, 'requests/' + requestId));
+  }
+
 
   return (
     <Card className="dataCard">
@@ -26,6 +48,9 @@ const RequestCard = ({ request }) => {
         <Card.Subtitle className="mb-2 text-muted">
           Status: {status}
         </Card.Subtitle>
+
+        <Button variant="danger" onClick={handleDelete}>Delete</Button>
+
       </Card.Body>
     </Card>
   );

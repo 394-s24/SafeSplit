@@ -109,6 +109,8 @@ const App = () => {
   }
   // Accessing just the rider1 field from the first object in FirebaseData
   // console.log(FirebaseData)
+  // max id for new request 
+  foundMaxRequestId++
   return (
     <Container>
       <RideForm

@@ -19,16 +19,25 @@ const RequestCard = ({ request }) => {
   const [editing, setEditing] = useState(false);
 
   const handleDelete = () => {
-    
+    //when request is pending , just remove the request
+
+    //firebase remove set ref location's value to null!
+    if(status==="Pending"){
+      console.log("deleting request", requestId);
+      remove(ref(db, 'requests/' + requestId));
+    }
+    //when request is matched, remove the request and match, then reset request within the match
+    else{
     // remove the match associated with the request from db
     console.log("deleting match", matchId);
     remove(ref(db, 'matches/' + matchId));
-    
-    // TODO go into match and adjust associated requests
-
-    // remove the requests from db
     console.log("deleting request", requestId);
     remove(ref(db, 'requests/' + requestId));
+
+    // TODO go into match and adjust associated requests
+    }
+
+    
   }
 
 

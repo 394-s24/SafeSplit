@@ -75,14 +75,24 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
       var matched = 0;
       var potentialMatches = new Array();
       const requests = data["requests"];
+      console.log(currMaxId)
+      console.log(currMaxMatchId)
+      console.log("request: "+JSON.stringify(requests))
+      console.log("leng: "+requests.length);
+      for (let i = 0; i < requests.length; i++) {
+        console.log(i)
+        console.log(requests[i]);
+      }
+
 
       // for every request
-      for (let i = 0; i < Object.keys(requests).length; i++) {
+      for (let i = 0; i < requests.length; i++) {
         const currentRequest = requests[i];
 
         // if the current request is not matched
-        if (currentRequest.status != "Matched") {
-          console.log(currentRequest);
+        
+        if (currentRequest!=null&& currentRequest.status != "Matched") {
+          //console.log(currentRequest);
 
           // if its a valid request
           if (

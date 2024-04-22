@@ -22,14 +22,14 @@ const DataLogger = ({ matchData, reqData, tabKey, setTabKey}) => {
         <Tab eventKey="request" title="Request" className="data-card-holder">
           <div className="data-card-holder">
             {reqData.map((request) => (
-              <RequestCard key={ request.timeStart} request={request} />
+              <RequestCard key={request.id} request={request} setTabKey={setTabKey}/>
             ))}
           </div>
         </Tab>
         <Tab eventKey="matches" title="Matches">
           <div className="data-card-holder">
             {matchData.map((match) => (
-              <MatchCard key={ match.timeStart} match={match} />
+              <MatchCard key={match.id} match={match} />
             ))}
           </div>
         </Tab>

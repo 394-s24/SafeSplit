@@ -178,7 +178,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
           status: "Matched",
           requestTimeEnd: dateEndGMT,
           requestTimeStart: dateStartGMT,
-          match_id: currMaxMatchId
+          match_id: currMaxMatchId,
+          id: currMaxId
         });
         //adjust old requests to matched
         set(ref(db, "requests/" + potentialMatches[0][2]), {
@@ -189,7 +190,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
           status: "Matched",
           requestTimeEnd: potentialMatches[0][0].requestTimeEnd,
           requestTimeStart: potentialMatches[0][0].requestTimeStart,
-          match_id: currMaxMatchId
+          match_id: currMaxMatchId,
+          id: potentialMatches[0][2]
         });
         if (potentialMatches.length == 2) {
           requests_ids.push(potentialMatches[1][2]);
@@ -201,7 +203,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
             status: "Matched",
             requestTimeEnd: potentialMatches[1][0].requestTimeEnd,
             requestTimeStart: potentialMatches[1][0].requestTimeStart,
-            match_id: currMaxMatchId
+            match_id: currMaxMatchId,
+            id: potentialMatches[1][2]
           });
         }
 
@@ -215,9 +218,10 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
           rider2: potentialMatches[0][0].email,
           rider3: additionalRider,
           //just returns the last requesters timeStart and timeEnd
-          timeEnd: dateEndGMT,
-          timeStart: dateStartGMT,
-          request_ids: requests_ids
+          timeEnd: Math.min(potentialMatches[0][0].requestTimeEnd, dateEndGMT),
+          timeStart: Math.max(potentialMatches[0][0].requestTimeStart, dateStartGMT),
+          request_ids: requests_ids,
+          id: currMaxMatchId
         });
 
         setTabKey("matches")
@@ -243,7 +247,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
           status: "Pending",
           requestTimeEnd: dateEndGMT,
           requestTimeStart: dateStartGMT,
-          match_id: ""
+          match_id: "",
+          id: currMaxId
         });
       }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Card from "react-bootstrap/Card";
-import { Button } from "react-bootstrap";
+import { Button} from "react-bootstrap";
 import {db} from "../../utilities/FireBase";
 import { ref, remove,update } from "firebase/database";
 
@@ -18,13 +18,9 @@ const RequestCard = ({ request,data}) => {
 
   const [editing, setEditing] = useState(false);
 
- // console.log(matchId) 
-
   //object requests 
   const requests=data["requests"]
-
- 
-
+  
   const handleDelete = () => {
     //when request is pending , just remove the request
 
@@ -57,7 +53,6 @@ const RequestCard = ({ request,data}) => {
       }
     }
   }
-
 
   return (
     <Card className="dataCard">

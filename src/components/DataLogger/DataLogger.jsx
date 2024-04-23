@@ -27,7 +27,7 @@ const DataLogger = ({ matchData, reqData,firebaseData }) => {
         <Tab eventKey="matches" title="Matches">
           <div className="data-card-holder">
             {matchData.map((match) => (
-              <MatchCard match={match} />
+              <MatchCard match={match} data={firebaseData} />
             ))}
           </div>
         </Tab>

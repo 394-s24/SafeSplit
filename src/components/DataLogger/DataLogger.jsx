@@ -7,7 +7,8 @@ import ReactDatePicker from "react-datepicker";
 import "./DataLogger.css";
 import RequestCard from "../RequestCard/RequestCard";
 
-const DataLogger = ({ matchData, reqData }) => {
+const DataLogger = ({ matchData, reqData,firebaseData }) => {
+  console.log(reqData)
   return (
     <div id="DataLogger">
       {" "}
@@ -19,7 +20,7 @@ const DataLogger = ({ matchData, reqData }) => {
         <Tab eventKey="request" title="Request" className="data-card-holder">
           <div className="data-card-holder">
             {reqData.map((request) => (
-              <RequestCard request={request} />
+              <RequestCard request={request} data={firebaseData} />
             ))}
           </div>
         </Tab>

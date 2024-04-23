@@ -75,8 +75,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
       var matched = 0;
       var potentialMatches = new Array();
       const requests = data["requests"];
-      console.log(currMaxId)
-      console.log(currMaxMatchId)
+      //console.log(currMaxId)
+      //console.log(currMaxMatchId)
       console.log("request: "+JSON.stringify(requests))
       console.log("leng: "+requests.length);
       for (let i = 0; i < requests.length; i++) {

@@ -119,7 +119,7 @@ const App = () => {
         data={FirebaseData}
       />
       <Row>
-        <DataLogger reqData={reqData} matchData={matchData} />
+        <DataLogger reqData={reqData} matchData={matchData} firebaseData={FirebaseData}/>
       </Row>
     </Container>
   );

@@ -3,9 +3,9 @@ import { useState } from "react";
 import Card from "react-bootstrap/Card";
 import { Button } from "react-bootstrap";
 import {db} from "../../utilities/FireBase";
-import { ref, remove } from "firebase/database";
+import { ref, remove,update } from "firebase/database";
 
-const RequestCard = ({ request }) => {
+const RequestCard = ({ request,data}) => {
   const startTime = request[0];
   const endTime = request[1];
   const locationFrom = request[2];
@@ -18,6 +18,13 @@ const RequestCard = ({ request }) => {
 
   const [editing, setEditing] = useState(false);
 
+ // console.log(matchId) 
+
+  //object requests 
+  const requests=data["requests"]
+
+ 
+
   const handleDelete = () => {
     //when request is pending , just remove the request
 
@@ -25,6 +32,7 @@ const RequestCard = ({ request }) => {
     if(status==="Pending"){
       console.log("deleting request", requestId);
       remove(ref(db, 'requests/' + requestId));
+
     }
     //when request is matched, remove the request and match, then reset request within the match
     else{
@@ -33,11 +41,21 @@ const RequestCard = ({ request }) => {
     remove(ref(db, 'matches/' + matchId));
     console.log("deleting request", requestId);
     remove(ref(db, 'requests/' + requestId));
-
-    // TODO go into match and adjust associated requests
+    //  go into match and adjust associated requests
+      for (const key in requests){
+        console.log( requests[key]['match_id'])
+        //console.log(requests[key]['match_id']==matchId)
+        //find request with same match_id , set match_id to '' ,status to 'pending'
+        if(requests[key]['match_id']==matchId&&key!=requestId){
+          console.log("set key  "+key+" to Pending and empty matchid")
+          //muti-line update: https://firebase.blog/posts/2015/09/introducing-multi-location-updates-and_86
+          update(ref(db, "requests/" + key),{
+            status: "Pending",
+            match_id:""
+          })
+        }
+      }
     }
-
-    
   }
 
 

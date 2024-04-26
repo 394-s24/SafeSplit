@@ -13,7 +13,7 @@ const NavBar = ({ user, setUser }) => {
       <Container>
         <Navbar.Brand href="#home">
           <img
-            src="safesplit_logo.svg"
+            src="https://stephaniema-agile.s3.us-east-2.amazonaws.com/safesplit_logo.svg"
             width="170"
             height="38"
             className="d-inline-block align-top"

@@ -1,0 +1,40 @@
+import React from 'react'
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+
+const NavBar = ({ user, setUser }) => {
+  return (
+    <Navbar expand="lg" className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand href="#home">
+          <img
+            src="safesplit_logo.svg"
+            width="170"
+            height="38"
+            className="d-inline-block align-top"
+            alt="SafeSplit logo"
+          />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse className="justify-content-end">
+          <Nav>
+            <Navbar.Text>
+              Signed in as: {user}
+            </Navbar.Text>
+            <NavDropdown title="Select User" id="basic-nav-dropdown" onSelect={function (evt) { setUser(evt) }}>
+              <NavDropdown.Item eventKey="johnsmith@gmail.com">johnsmith@gmail.com</NavDropdown.Item>
+              <NavDropdown.Item eventKey="gracehopper@gmail.com">gracehopper@gmail.com</NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  )
+}
+
+export default NavBar

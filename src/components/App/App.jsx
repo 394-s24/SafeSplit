@@ -5,9 +5,8 @@ import { useEffect } from "react";
 import RideForm from "../RideForm/RideForm.jsx";
 import DataLogger from "../DataLogger/DataLogger.jsx";
 import { Container, Spinner, Row} from "react-bootstrap";
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import "./App.css";
+import NavBar from "../NavBar/NavBar.jsx";
 
 
 const App = () => {
@@ -117,16 +116,12 @@ const App = () => {
   foundMaxRequestId++
   
   return (
+    <div>
+       <NavBar
+        user={user}
+        setUser={setUser}
+      />
     <Container>
-      <div id="admin_panel">
-      <DropdownButton id="dropdown-basic-button" title="Select User" onSelect={function(evt){setUser(evt)}}>
-          <Dropdown.Item eventKey="johnsmith@gmail.com">johnsmith@gmail.com</Dropdown.Item>
-          <Dropdown.Item eventKey="gracehopper@gmail.com">gracehopper@gmail.com</Dropdown.Item>
-        </DropdownButton>
-      <p> Signed in as: {user} </p>
-      </div>
-        
-      
       <RideForm
         currMaxId={foundMaxRequestId}
         currMaxMatchId={foundMaxMatchId}
@@ -144,7 +139,8 @@ const App = () => {
           firebaseData={FirebaseData}
         />
       </Row>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

@@ -4,13 +4,16 @@ import { ref, onValue } from "firebase/database";
 import { useEffect } from "react";
 import RideForm from "../RideForm/RideForm.jsx";
 import DataLogger from "../DataLogger/DataLogger.jsx";
-import { Container, Spinner, Row } from "react-bootstrap";
+import { Container, Spinner, Row} from "react-bootstrap";
 import "./App.css";
+import NavBar from "../NavBar/NavBar.jsx";
 
 
 const App = () => {
   const [FirebaseData, setFirebaseData] = useState();
   const [key, setKey] = useState('request');
+  const [user, setUser] = useState("johnsmith@gmail.com");
+
 
   useEffect(() => {
     const firebaseRef = ref(db);
@@ -34,8 +37,6 @@ const App = () => {
       </Container>
     );
   }
-
-  const user = "johnsmith@gmail.com";
 
   var reqData = Array();
   // fixed for nonconsecutive indices
@@ -115,6 +116,11 @@ const App = () => {
   foundMaxRequestId++
   
   return (
+    <div>
+       <NavBar
+        user={user}
+        setUser={setUser}
+      />
     <Container>
       <RideForm
         currMaxId={foundMaxRequestId}
@@ -122,6 +128,7 @@ const App = () => {
         data={FirebaseData}
         tabKey={key}
         setTabKey = {setKey}
+        user = {user}
       />
       <Row>
         <DataLogger
@@ -132,7 +139,8 @@ const App = () => {
           firebaseData={FirebaseData}
         />
       </Row>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

@@ -11,10 +11,9 @@ import { useToast } from '@chakra-ui/react'
 
 
 
-const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
+const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) => {
   const [locationFrom, setLocationFrom] = useState("");
   const [locationTo, setLocationTo] = useState("");
-  const [email, setEmail] = useState("johnsmith@gmail.com");
   const [dateStart, setDateStart] = useState("");
   const [timeStart, setTimeStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");
@@ -50,11 +49,16 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
     // })
   }
 
+
   function runAlgorithm(event) {
     event.preventDefault(); // prevent refresh
-
+    
     // form date validation
-    if (dateStart > dateEnd) {
+    if (new Date(dateStart + " " + timeStart) < new Date() || new Date(dateEnd + " " + timeEnd) < new Date()) {
+      setError("Please select a future date");
+      return;
+    }
+    else if (dateStart > dateEnd) {
       setError("Earliest pickup date must be before latest pickup date");
       return;
     }
@@ -131,9 +135,9 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
             //console.log(currentRequest.requestTimeEnd-currentRequest.requestTimeStart)
             console.log(intersection)
             console.log(currentRequest.email)
-            console.log(email)
+            console.log(user)
 
-            if (intersection > 0 && currentRequest.email != email) {
+            if (intersection > 0 && currentRequest.email != user) {
               if (potentialMatches.length != 2) {
                 //potentialMatches is an array of arrays, where each array holds a request, the intersection time, and the index of the request
                 potentialMatches.push([currentRequest, intersection, i]);
@@ -171,7 +175,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
         
         //add new request
         set(ref(db, "requests/" + currMaxId), {
-          email: email,
+          email: user,
           locationFrom: locationFrom,
           locationTo: locationTo,
           numRiders: 1,
@@ -214,7 +218,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
         set(ref(db, "matches/" + currMaxMatchId), {
           locationFrom: locationFrom,
           locationTo: locationTo,
-          rider1: "johnsmith@gmail.com",
+          rider1: user,
           rider2: potentialMatches[0][0].email,
           rider3: additionalRider,
           //just returns the last requesters timeStart and timeEnd
@@ -240,7 +244,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
 
       } else {
         set(ref(db, "requests/" + currMaxId), {
-          email: "johnsmith@gmail.com",
+          email: user,
           locationFrom: locationFrom,
           locationTo: locationTo,
           numRiders: 1,

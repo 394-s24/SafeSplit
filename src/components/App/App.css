@@ -1,1 +1,14 @@
+#dropdown-basic-button {
+    margin: 10px;
+}
 
+#admin_panel{
+    /* flexbox */
+    display: flex;
+    flex-direction: row;
+}
+
+#admin_panel p {
+    margin-top: 15px;
+    margin-left: 10px;
+}

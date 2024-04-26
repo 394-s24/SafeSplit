@@ -75,14 +75,24 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
       var matched = 0;
       var potentialMatches = new Array();
       const requests = data["requests"];
+      //console.log(currMaxId)
+      //console.log(currMaxMatchId)
+      console.log("request: "+JSON.stringify(requests))
+      console.log("leng: "+requests.length);
+      for (let i = 0; i < requests.length; i++) {
+        console.log(i)
+        console.log(requests[i]);
+      }
+
 
       // for every request
-      for (let i = 0; i < Object.keys(requests).length; i++) {
+      for (let i = 0; i < requests.length; i++) {
         const currentRequest = requests[i];
 
         // if the current request is not matched
-        if (currentRequest.status != "Matched") {
-          console.log(currentRequest);
+        
+        if (currentRequest!=null&& currentRequest.status != "Matched") {
+          //console.log(currentRequest);
 
           // if its a valid request
           if (
@@ -139,17 +149,9 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
         } else {
           additionalRider = potentialMatches[1][0].email;
         }
-        //   //set matches
-        set(ref(db, "matches/" + currMaxMatchId), {
-          locationFrom: locationFrom,
-          locationTo: locationTo,
-          rider1: "johnsmith@gmail.com",
-          rider2: potentialMatches[0][0].email,
-          rider3: additionalRider,
-          //just returns the last requesters timeStart and timeEnd
-          timeEnd: dateEndGMT,
-          timeStart: dateStartGMT,
-        });
+
+        let requests_ids = [currMaxId, potentialMatches[0][2]]; 
+        
         //add new request
         set(ref(db, "requests/" + currMaxId), {
           email: "johnsmith@gmail.com",
@@ -159,6 +161,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
           status: "Matched",
           requestTimeEnd: dateEndGMT,
           requestTimeStart: dateStartGMT,
+          match_id: currMaxMatchId
         });
         //adjust old requests to matched
         set(ref(db, "requests/" + potentialMatches[0][2]), {
@@ -169,8 +172,10 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
           status: "Matched",
           requestTimeEnd: potentialMatches[0][0].requestTimeEnd,
           requestTimeStart: potentialMatches[0][0].requestTimeStart,
+          match_id: currMaxMatchId
         });
         if (potentialMatches.length == 2) {
+          requests_ids.push(potentialMatches[1][2]);
           set(ref(db, "requests/" + potentialMatches[1][2]), {
             email: potentialMatches[1][0].email,
             locationFrom: potentialMatches[1][0].locationFrom,
@@ -179,8 +184,24 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
             status: "Matched",
             requestTimeEnd: potentialMatches[1][0].requestTimeEnd,
             requestTimeStart: potentialMatches[1][0].requestTimeStart,
+            match_id: currMaxMatchId
           });
         }
+
+        console.log("Requests IDs are ",requests_ids);
+        
+        //set matches
+        set(ref(db, "matches/" + currMaxMatchId), {
+          locationFrom: locationFrom,
+          locationTo: locationTo,
+          rider1: "johnsmith@gmail.com",
+          rider2: potentialMatches[0][0].email,
+          rider3: additionalRider,
+          //just returns the last requesters timeStart and timeEnd
+          timeEnd: dateEndGMT,
+          timeStart: dateStartGMT,
+          request_ids: requests_ids
+        });
       } else {
         set(ref(db, "requests/" + currMaxId), {
           email: "johnsmith@gmail.com",
@@ -190,8 +211,10 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
           status: "Pending",
           requestTimeEnd: dateEndGMT,
           requestTimeStart: dateStartGMT,
+          match_id: ""
         });
       }
+
       setLocationFrom("");
       setLocationTo("");
       setDateStart("");
@@ -243,7 +266,6 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
                 onChange={(e) => setLocationTo(e.target.value)}
                 required
                 placeholder="Location To"
-                defaultValue="Mark"
               >
                 <option value="">Choose...</option>
                 <option value="Trader joes">Trader joes</option>
@@ -290,7 +312,6 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
                 value={dateEnd}
                 onChange={(e) => setDateEnd(e.target.value)}
                 type="date"
-                placeholder="City"
                 required
               />
               <Form.Control.Feedback type="invalid">
@@ -303,7 +324,6 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
                 value={timeEnd}
                 onChange={(e) => setTimeEnd(e.target.value)}
                 type="time"
-                placeholder="State"
                 required
               />
               <Form.Control.Feedback type="invalid">

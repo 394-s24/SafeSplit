@@ -17,6 +17,9 @@ const App = () => {
     });
   }, []);
 
+  let foundMaxMatchId = 0;
+  let foundMaxRequestId = 0;
+
   // Make sure FirebaseData has loaded and contains data
   if (!FirebaseData) {
     return (
@@ -34,17 +37,23 @@ const App = () => {
 
   var reqData = Array();
   // fixed for nonconsecutive indices
-  for (let i = 0; i < Object.keys(FirebaseData["requests"]).length; i++) {
+  for (const [key, value] of Object.entries(FirebaseData["requests"])) {
+    foundMaxRequestId < parseInt(key)
+      ? (foundMaxRequestId = parseInt(key))
+      : null;
+
     const {
+      email,
       locationFrom,
       locationTo,
       numRiders,
       requestTimeStart,
       requestTimeEnd,
       status,
-    } = FirebaseData["requests"][i];
+      match_id,
+    } = value;
 
-    if (FirebaseData["requests"][i].email == user) {
+    if (email == user) {
       var matchStart = new Date(requestTimeStart * 1000).toLocaleString();
       var matchEnd = new Date(requestTimeEnd * 1000).toLocaleString();
       reqData.push([
@@ -55,7 +64,8 @@ const App = () => {
         user,
         numRiders,
         status,
-        i + 1,
+        key,
+        match_id,
       ]);
     }
     reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
@@ -63,7 +73,9 @@ const App = () => {
 
   var matchData = Array();
   // fixed for nonconsecutive indices
-  for (let i = 0; i < Object.keys(FirebaseData["matches"]).length; i++) {
+  for (const [key, value] of Object.entries(FirebaseData["matches"])) {
+    foundMaxMatchId < parseInt(key) ? (foundMaxMatchId = parseInt(key)) : null;
+
     const {
       timeStart,
       timeEnd,
@@ -72,7 +84,7 @@ const App = () => {
       rider1,
       rider2,
       rider3,
-    } = FirebaseData["matches"][i];
+    } = value;
 
     let riderArr = Array();
 
@@ -89,7 +101,7 @@ const App = () => {
         locationFrom,
         locationTo,
         riderArr,
-        i + 1,
+        key,
       ]);
     }
 
@@ -97,15 +109,17 @@ const App = () => {
   }
   // Accessing just the rider1 field from the first object in FirebaseData
   // console.log(FirebaseData)
+  // max id for new request 
+  foundMaxRequestId++
   return (
     <Container>
-        <RideForm
-          currMaxId={Object.keys(FirebaseData["requests"]).length}
-          currMaxMatchId={Object.keys(FirebaseData["matches"]).length}
-          data={FirebaseData}
-        />
+      <RideForm
+        currMaxId={foundMaxRequestId}
+        currMaxMatchId={foundMaxMatchId}
+        data={FirebaseData}
+      />
       <Row>
-        <DataLogger reqData={reqData} matchData={matchData} />
+        <DataLogger reqData={reqData} matchData={matchData} firebaseData={FirebaseData}/>
       </Row>
     </Container>
   );

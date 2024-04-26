@@ -4,13 +4,17 @@ import { ref, onValue } from "firebase/database";
 import { useEffect } from "react";
 import RideForm from "../RideForm/RideForm.jsx";
 import DataLogger from "../DataLogger/DataLogger.jsx";
-import { Container, Spinner, Row } from "react-bootstrap";
+import { Container, Spinner, Row} from "react-bootstrap";
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import "./App.css";
 
 
 const App = () => {
   const [FirebaseData, setFirebaseData] = useState();
   const [key, setKey] = useState('request');
+  const [user, setUser] = useState("johnsmith@gmail.com");
+
 
   useEffect(() => {
     const firebaseRef = ref(db);
@@ -34,8 +38,6 @@ const App = () => {
       </Container>
     );
   }
-
-  const user = "johnsmith@gmail.com";
 
   var reqData = Array();
   // fixed for nonconsecutive indices
@@ -116,12 +118,22 @@ const App = () => {
   
   return (
     <Container>
+      <div id="admin_panel">
+      <DropdownButton id="dropdown-basic-button" title="Select User" onSelect={function(evt){setUser(evt)}}>
+          <Dropdown.Item eventKey="johnsmith@gmail.com">johnsmith@gmail.com</Dropdown.Item>
+          <Dropdown.Item eventKey="gracehopper@gmail.com">gracehopper@gmail.com</Dropdown.Item>
+        </DropdownButton>
+      <p> Signed in as: {user} </p>
+      </div>
+        
+      
       <RideForm
         currMaxId={foundMaxRequestId}
         currMaxMatchId={foundMaxMatchId}
         data={FirebaseData}
         tabKey={key}
         setTabKey = {setKey}
+        user = {user}
       />
       <Row>
         <DataLogger

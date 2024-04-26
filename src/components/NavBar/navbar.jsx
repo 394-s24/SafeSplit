@@ -29,6 +29,8 @@ const NavBar = ({ user, setUser }) => {
             <NavDropdown title="Select User" id="basic-nav-dropdown" onSelect={function (evt) { setUser(evt) }}>
               <NavDropdown.Item eventKey="johnsmith@gmail.com">johnsmith@gmail.com</NavDropdown.Item>
               <NavDropdown.Item eventKey="gracehopper@gmail.com">gracehopper@gmail.com</NavDropdown.Item>
+              <NavDropdown.Item eventKey="janedoe@gmail.com">janedoe@gmail.com</NavDropdown.Item>
+
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

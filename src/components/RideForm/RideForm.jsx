@@ -49,11 +49,16 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
     // })
   }
 
+
   function runAlgorithm(event) {
     event.preventDefault(); // prevent refresh
-
+    
     // form date validation
-    if (dateStart > dateEnd) {
+    if (new Date(dateStart + " " + timeStart) < new Date() || new Date(dateEnd + " " + timeEnd) < new Date()) {
+      setError("Please select a future date");
+      return;
+    }
+    else if (dateStart > dateEnd) {
       setError("Earliest pickup date must be before latest pickup date");
       return;
     }

@@ -3,9 +3,10 @@ import { useState } from "react";
 import Card from "react-bootstrap/Card";
 import { Button} from "react-bootstrap";
 import {db} from "../../utilities/FireBase";
-import { ref, remove,update } from "firebase/database";
+import { ref, remove, update } from "firebase/database";
+import "./RequestCard.css";
 
-const RequestCard = ({ request,data}) => {
+const RequestCard = ({ request, setTabKey, data}) => {
   const startTime = request[0];
   const endTime = request[1];
   const locationFrom = request[2];
@@ -54,8 +55,12 @@ const RequestCard = ({ request,data}) => {
     }
   }
 
+  const displayMatch = () => {
+    setTabKey("matches");
+    
+  }
   return (
-    <Card className="dataCard">
+    <Card className="dataCard" >
       <Card.Body>
         <Card.Title>Request</Card.Title>
         <Card.Subtitle className="mb-2 text-muted">{userEmail}</Card.Subtitle>
@@ -68,7 +73,7 @@ const RequestCard = ({ request,data}) => {
           Time: {startTime} - {endTime}
         </Card.Text>
         <Card.Subtitle className="mb-2 text-muted">
-          Status: {status}
+          Status: <a href="#" onClick={ displayMatch }>{status}</a>
         </Card.Subtitle>
 
         <Button variant="danger" onClick={handleDelete}>Delete</Button>

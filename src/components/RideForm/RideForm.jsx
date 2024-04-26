@@ -7,11 +7,14 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import DateTimePicker from "react-datetime-picker";
 import "./RideForm.css";
+import { useToast } from '@chakra-ui/react'
 
-const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
+
+
+const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey}) => {
   const [locationFrom, setLocationFrom] = useState("");
   const [locationTo, setLocationTo] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("johnsmith@gmail.com");
   const [dateStart, setDateStart] = useState("");
   const [timeStart, setTimeStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");
@@ -27,10 +30,12 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
   // console.log(dateStart)
   // console.log(dateEnd)
 
+  const toast = useToast()
+  
+
   function firebaseTest(event) {
     event.preventDefault(); // prevent refresh
-    console.log(locationFrom);
-    console.log(locationTo);
+    console.log("firebase test")
 
     // // this is working to push to firebase
     // // currMaxId MUST be unique
@@ -60,6 +65,15 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
     else{
       let algorithmStartDate = new Date(dateStart + " " + timeStart);
       let algorithmEndDate = new Date(dateEnd + " " + timeEnd);
+
+      toast({
+        position: "top", 
+        title: "Request Submitted",
+        description: "Request successfully submitted",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      })
 
       console.log("Running Algorithm");
       // console.log(dateStart.toLocaleString("en-US", {timeZone: "America/Chicago"}));
@@ -91,19 +105,18 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
 
         // if the current request is not matched
         
-        if (currentRequest!=null&& currentRequest.status != "Matched") {
-          //console.log(currentRequest);
+        if (currentRequest!=null && currentRequest.status != "Matched") {
+          console.log(currentRequest);
 
+          console.log(locationTo)
+          console.log(locationFrom)
+          console.log(currentRequest.locationTo)
+          console.log(currentRequest.locationFrom) 
           // if its a valid request
           if (
             locationTo == currentRequest.locationTo &&
             locationFrom == currentRequest.locationFrom
           ) {
-            // if(i==2) {
-            //   console.log(currentRequest.requestTimeStart)
-            //   console.log(currentRequest.requestTimeEnd)
-            // }
-
             //if locationTo and locationFrom == that of the request, then check if times intersect
             //A: start date 1
             //B: End date 1
@@ -116,6 +129,10 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
               Math.min(currentRequest.requestTimeEnd, dateEndGMT) -
               Math.max(currentRequest.requestTimeStart, dateStartGMT);
             //console.log(currentRequest.requestTimeEnd-currentRequest.requestTimeStart)
+            console.log(intersection)
+            console.log(currentRequest.email)
+            console.log(email)
+
             if (intersection > 0 && currentRequest.email != email) {
               if (potentialMatches.length != 2) {
                 //potentialMatches is an array of arrays, where each array holds a request, the intersection time, and the index of the request
@@ -154,14 +171,15 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
         
         //add new request
         set(ref(db, "requests/" + currMaxId), {
-          email: "johnsmith@gmail.com",
+          email: email,
           locationFrom: locationFrom,
           locationTo: locationTo,
           numRiders: 1,
           status: "Matched",
           requestTimeEnd: dateEndGMT,
           requestTimeStart: dateStartGMT,
-          match_id: currMaxMatchId
+          match_id: currMaxMatchId,
+          id: currMaxId
         });
         //adjust old requests to matched
         set(ref(db, "requests/" + potentialMatches[0][2]), {
@@ -172,7 +190,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
           status: "Matched",
           requestTimeEnd: potentialMatches[0][0].requestTimeEnd,
           requestTimeStart: potentialMatches[0][0].requestTimeStart,
-          match_id: currMaxMatchId
+          match_id: currMaxMatchId,
+          id: potentialMatches[0][2]
         });
         if (potentialMatches.length == 2) {
           requests_ids.push(potentialMatches[1][2]);
@@ -184,7 +203,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
             status: "Matched",
             requestTimeEnd: potentialMatches[1][0].requestTimeEnd,
             requestTimeStart: potentialMatches[1][0].requestTimeStart,
-            match_id: currMaxMatchId
+            match_id: currMaxMatchId,
+            id: potentialMatches[1][2]
           });
         }
 
@@ -198,10 +218,26 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
           rider2: potentialMatches[0][0].email,
           rider3: additionalRider,
           //just returns the last requesters timeStart and timeEnd
-          timeEnd: dateEndGMT,
-          timeStart: dateStartGMT,
-          request_ids: requests_ids
+          timeEnd: Math.min(potentialMatches[0][0].requestTimeEnd, dateEndGMT),
+          timeStart: Math.max(potentialMatches[0][0].requestTimeStart, dateStartGMT),
+          request_ids: requests_ids,
+          id: currMaxMatchId
         });
+
+        setTabKey("matches")
+        setTimeout(() => {
+          toast({
+            position: "top", 
+            title: "New Match",
+            description: "Your request has been matched!",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          })
+        }, 1000);
+      
+
+
       } else {
         set(ref(db, "requests/" + currMaxId), {
           email: "johnsmith@gmail.com",
@@ -211,7 +247,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
           status: "Pending",
           requestTimeEnd: dateEndGMT,
           requestTimeStart: dateStartGMT,
-          match_id: ""
+          match_id: "",
+          id: currMaxId
         });
       }
 
@@ -270,7 +307,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data }) => {
                 <option value="">Choose...</option>
                 <option value="Trader joes">Trader joes</option>
                 <option value="Midway">Midway</option>
-                <option value="Ohare">Ohare</option>
+                <option value="OHare">OHare</option>
               </Form.Control>
               <Form.Control.Feedback type="invalid">
                 Please provide a valid dropoff location

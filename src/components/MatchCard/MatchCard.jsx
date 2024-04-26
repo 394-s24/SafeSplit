@@ -37,7 +37,7 @@ const MatchCard = ({ match, data}) => {
         <Card.Title>Match</Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
           {riders.map((rider) => (
-            <span>
+            <span key={ rider }>
               {" "}
               <a href={"mailto:" + { rider }}>{rider}</a> <br></br>
             </span>

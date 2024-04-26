@@ -7,8 +7,10 @@ import DataLogger from "../DataLogger/DataLogger.jsx";
 import { Container, Spinner, Row } from "react-bootstrap";
 import "./App.css";
 
+
 const App = () => {
   const [FirebaseData, setFirebaseData] = useState();
+  const [key, setKey] = useState('request');
 
   useEffect(() => {
     const firebaseRef = ref(db);
@@ -111,15 +113,24 @@ const App = () => {
   // console.log(FirebaseData)
   // max id for new request 
   foundMaxRequestId++
+  
   return (
     <Container>
       <RideForm
         currMaxId={foundMaxRequestId}
         currMaxMatchId={foundMaxMatchId}
         data={FirebaseData}
+        tabKey={key}
+        setTabKey = {setKey}
       />
       <Row>
-        <DataLogger reqData={reqData} matchData={matchData} firebaseData={FirebaseData}/>
+        <DataLogger
+          reqData={reqData}
+          matchData={matchData}
+          tabKey={key}
+          setTabKey={setKey}
+          firebaseData={FirebaseData}
+        />
       </Row>
     </Container>
   );

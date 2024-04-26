@@ -129,6 +129,7 @@ const App = () => {
           matchData={matchData}
           tabKey={key}
           setTabKey={setKey}
+          firebaseData={FirebaseData}
         />
       </Row>
     </Container>

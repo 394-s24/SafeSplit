@@ -3,6 +3,8 @@ import Card from "react-bootstrap/Card";
 import { Button} from "react-bootstrap";
 import { ref, remove,update } from "firebase/database";
 import {db} from "../../utilities/FireBase";
+import "./MatchCard.css";
+
 const MatchCard = ({ match, data}) => {
     const timeStart = match[0]
     const timeEnd = match[1]
@@ -32,7 +34,7 @@ const MatchCard = ({ match, data}) => {
     }
 
   return (
-    <Card className="dataCard">
+    <Card className="dataCard" id={match_id}>
       <Card.Body>
         <Card.Title>Match</Card.Title>
         <Card.Subtitle className="mb-2 text-muted">

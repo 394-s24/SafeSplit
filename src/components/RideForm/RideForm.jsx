@@ -22,19 +22,11 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
 
 
   const dbRef = ref(db);
-  // console.log(data)
-  // console.log(currMaxId)
-  // console.log(locationFrom)
-  // console.log(locationTo)
-  // console.log(dateStart)
-  // console.log(dateEnd)
-
   const toast = useToast()
   
 
   function firebaseTest(event) {
     event.preventDefault(); // prevent refresh
-    console.log("firebase test")
 
     // // this is working to push to firebase
     // // currMaxId MUST be unique
@@ -70,6 +62,150 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
       let algorithmStartDate = new Date(dateStart + " " + timeStart);
       let algorithmEndDate = new Date(dateEnd + " " + timeEnd);
 
+      
+
+      console.log("Running Algorithm");
+      var matched = false;
+
+      const dateStartGMT = Math.floor(algorithmStartDate.getTime() / 1000);
+      const dateEndGMT = Math.floor(algorithmEndDate.getTime() / 1000);
+
+      // run algorithm here
+      var matched = 0;
+      var potentialMatches = new Array();
+
+      var matches = data["matches"];
+      matches = Array(matches);
+      matches.forEach((currentMatch) => {
+        // correct for weird firebase formatting 
+        currentMatch = Object.values(currentMatch)[0];
+
+        if (currentMatch.request_ids.length < 3) {
+          if (currentMatch.rider1 != user || currentMatch.rider2 != user) {
+            //if the user is not in the match, then check if the user's request intersects with the match
+            var intersection =
+              Math.min(currentMatch.timeEnd, dateEndGMT) -
+              Math.max(currentMatch.timeStart, dateStartGMT);
+            if (intersection > 0) {
+              potentialMatches.push([intersection, currentMatch]);
+            }
+          }
+        }
+      });
+
+      if (potentialMatches.length != 0) {
+        // sort potential matches by intersection time
+        potentialMatches.sort((a, b) => b[0] - a[0]);
+        
+        var targetMatch = potentialMatches[0][1];
+        //modify match
+        set(ref(db, "matches/" + targetMatch.id), {
+          locationFrom: locationFrom,
+          locationTo: locationTo,
+          rider1: targetMatch.rider1,
+          rider2: targetMatch.rider2,
+          rider3: user,
+          //just returns the last requesters timeStart and timeEnd
+          timeEnd: Math.min(targetMatch.timeEnd, dateEndGMT),
+          timeStart: Math.max(targetMatch.timeStart, dateStartGMT),
+          request_ids: targetMatch.request_ids.concat(currMaxId),
+          id: targetMatch.id
+        });
+
+        matched = true;
+      } else {
+        // else if couldn't find existing match to add to
+        var requests = data["requests"];
+
+
+        // for every request
+        requests = Array(requests)[0];
+        requests.forEach((currentRequest) => {
+          // for (let i = 0; i < requests.length; i++) {
+          //   const currentRequest = requests[i];
+
+          // if the current request is not matched
+          currentRequest = Object.values(currentRequest);
+
+          if (currentRequest[8] != "Matched") {
+
+            // if request locations match
+            if (
+              locationTo == currentRequest[3] &&
+              locationFrom == currentRequest[2]
+            ) {
+
+              var intersection =
+                Math.min(currentRequest[6], dateEndGMT) -
+                Math.max(currentRequest[7], dateStartGMT);
+              if (intersection > 0 && currentRequest[0] != user) {
+                potentialMatches.push([intersection, currentRequest]);
+              }
+            }
+          }
+        });
+
+        if (potentialMatches.length > 0) {
+          // sort potential matches by intersection time
+          potentialMatches.sort((a, b) => b[0] - a[0]);
+
+          var targetRequest = potentialMatches[0];
+          targetRequest = {
+            email: targetRequest[1][0],
+            locationFrom: targetRequest[1][2],
+            locationTo: targetRequest[1][3],
+            requestTimeEnd: targetRequest[1][6],
+            requestTimeStart: targetRequest[1][7],
+            id: targetRequest[1][1],
+            numRiders: targetRequest[5],
+            match_id: targetRequest[1][4]
+          }
+          //adjust target request to matched
+          set(ref(db, "requests/" + targetRequest.id), {
+            email: targetRequest.email,
+            locationFrom: targetRequest.locationFrom,
+            locationTo: targetRequest.locationTo,
+            numRiders: 2,
+            status: "Matched",
+            requestTimeEnd: targetRequest.requestTimeEnd,
+            requestTimeStart: targetRequest.requestTimeStart,
+            match_id: currMaxMatchId,
+            id: targetRequest.id
+          });
+
+          // add new match
+          set(ref(db, "matches/" + currMaxMatchId), {
+            locationFrom: locationFrom,
+            locationTo: locationTo,
+            rider1: targetRequest.email,
+            rider2: user,
+            rider3: "",
+            //just returns the last requesters timeStart and timeEnd
+            timeEnd: Math.min(targetRequest.requestTimeEnd, dateEndGMT),
+            timeStart: Math.max(targetRequest.requestTimeStart, dateStartGMT),
+            request_ids: [targetRequest.id, currMaxId],
+            id: currMaxMatchId
+          });
+
+          matched = true;
+        }
+      }
+
+      
+
+      // in either case, add new request
+      set(ref(db, "requests/" + currMaxId), {
+        email: user,
+        locationFrom: locationFrom,
+        locationTo: locationTo,
+        numRiders: 1,
+        status: matched ? "Matched" : "Pending",
+        requestTimeEnd: dateEndGMT,
+        requestTimeStart: dateStartGMT,
+        match_id: currMaxMatchId,
+        id: currMaxId
+      });
+
       toast({
         position: "top", 
         title: "Request Submitted",
@@ -79,155 +215,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
         isClosable: true,
       })
 
-      console.log("Running Algorithm");
-      // console.log(dateStart.toLocaleString("en-US", {timeZone: "America/Chicago"}));
-      // console.log(dateStart.toLocaleString("en-US", {timeZone: "UTC"}));
-      // console.log(Math.floor(dateStart.getTime() / 1000));
-      // console.log(dateStart);
-      const dateStartGMT = Math.floor(algorithmStartDate.getTime() / 1000);
-      const dateEndGMT = Math.floor(algorithmEndDate.getTime() / 1000);
-
-
-
-      // run algorithm here
-      var matched = 0;
-      var potentialMatches = new Array();
-      const requests = data["requests"];
-      //console.log(currMaxId)
-      //console.log(currMaxMatchId)
-      console.log("request: "+JSON.stringify(requests))
-      console.log("leng: "+requests.length);
-      for (let i = 0; i < requests.length; i++) {
-        console.log(i)
-        console.log(requests[i]);
-      }
-
-
-      // for every request
-      for (let i = 0; i < requests.length; i++) {
-        const currentRequest = requests[i];
-
-        // if the current request is not matched
-        
-        if (currentRequest!=null && currentRequest.status != "Matched") {
-          console.log(currentRequest);
-
-          console.log(locationTo)
-          console.log(locationFrom)
-          console.log(currentRequest.locationTo)
-          console.log(currentRequest.locationFrom) 
-          // if its a valid request
-          if (
-            locationTo == currentRequest.locationTo &&
-            locationFrom == currentRequest.locationFrom
-          ) {
-            //if locationTo and locationFrom == that of the request, then check if times intersect
-            //A: start date 1
-            //B: End date 1
-            //C: start date 2
-            //D: end date 2
-            //(min(B, D) - max(A, C)) >= 0
-
-            //console.log(dateStartGMT)
-            var intersection =
-              Math.min(currentRequest.requestTimeEnd, dateEndGMT) -
-              Math.max(currentRequest.requestTimeStart, dateStartGMT);
-            //console.log(currentRequest.requestTimeEnd-currentRequest.requestTimeStart)
-            console.log(intersection)
-            console.log(currentRequest.email)
-            console.log(user)
-
-            if (intersection > 0 && currentRequest.email != user) {
-              if (potentialMatches.length != 2) {
-                //potentialMatches is an array of arrays, where each array holds a request, the intersection time, and the index of the request
-                potentialMatches.push([currentRequest, intersection, i]);
-              } else {
-                var smallestValue = potentialMatches[0][1];
-                var smallestIndex = 0;
-                for (let i = 0; i < 2; i++) {
-                  if (smallestValue > potentialMatches[i][1]) {
-                    smallestValue = potentialMatches[i][1];
-                    smallestIndex = i;
-                  }
-                }
-                if (smallestValue < intersection) {
-                  potentialMatches[smallestIndex] = [
-                    currentRequest,
-                    intersection,
-                    i,
-                  ];
-                }
-              }
-            }
-          }
-        }
-      }
-      console.log(potentialMatches);
-      if (potentialMatches.length != 0) {
-        var additionalRider;
-        if (potentialMatches.length == 1) {
-          additionalRider = "";
-        } else {
-          additionalRider = potentialMatches[1][0].email;
-        }
-
-        let requests_ids = [currMaxId, potentialMatches[0][2]]; 
-        
-        //add new request
-        set(ref(db, "requests/" + currMaxId), {
-          email: user,
-          locationFrom: locationFrom,
-          locationTo: locationTo,
-          numRiders: 1,
-          status: "Matched",
-          requestTimeEnd: dateEndGMT,
-          requestTimeStart: dateStartGMT,
-          match_id: currMaxMatchId,
-          id: currMaxId
-        });
-        //adjust old requests to matched
-        set(ref(db, "requests/" + potentialMatches[0][2]), {
-          email: potentialMatches[0][0].email,
-          locationFrom: potentialMatches[0][0].locationFrom,
-          locationTo: potentialMatches[0][0].locationTo,
-          numRiders: 1,
-          status: "Matched",
-          requestTimeEnd: potentialMatches[0][0].requestTimeEnd,
-          requestTimeStart: potentialMatches[0][0].requestTimeStart,
-          match_id: currMaxMatchId,
-          id: potentialMatches[0][2]
-        });
-        if (potentialMatches.length == 2) {
-          requests_ids.push(potentialMatches[1][2]);
-          set(ref(db, "requests/" + potentialMatches[1][2]), {
-            email: potentialMatches[1][0].email,
-            locationFrom: potentialMatches[1][0].locationFrom,
-            locationTo: potentialMatches[1][0].locationTo,
-            numRiders: 1,
-            status: "Matched",
-            requestTimeEnd: potentialMatches[1][0].requestTimeEnd,
-            requestTimeStart: potentialMatches[1][0].requestTimeStart,
-            match_id: currMaxMatchId,
-            id: potentialMatches[1][2]
-          });
-        }
-
-        console.log("Requests IDs are ",requests_ids);
-        
-        //set matches
-        set(ref(db, "matches/" + currMaxMatchId), {
-          locationFrom: locationFrom,
-          locationTo: locationTo,
-          rider1: user,
-          rider2: potentialMatches[0][0].email,
-          rider3: additionalRider,
-          //just returns the last requesters timeStart and timeEnd
-          timeEnd: Math.min(potentialMatches[0][0].requestTimeEnd, dateEndGMT),
-          timeStart: Math.max(potentialMatches[0][0].requestTimeStart, dateStartGMT),
-          request_ids: requests_ids,
-          id: currMaxMatchId
-        });
-
+      if (matched) {
+        // switch to match tab and add match success toast
         setTabKey("matches")
         setTimeout(() => {
           toast({
@@ -239,23 +228,13 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
             isClosable: true,
           })
         }, 1000);
-      
-
-
-      } else {
-        set(ref(db, "requests/" + currMaxId), {
-          email: user,
-          locationFrom: locationFrom,
-          locationTo: locationTo,
-          numRiders: 1,
-          status: "Pending",
-          requestTimeEnd: dateEndGMT,
-          requestTimeStart: dateStartGMT,
-          match_id: "",
-          id: currMaxId
-        });
       }
 
+      // if (!matched) {
+      //   throw new Error("didn't match");
+      // }
+
+      // clear everything
       setLocationFrom("");
       setLocationTo("");
       setDateStart("");
@@ -263,7 +242,9 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
       setDateEnd("");
       setTimeEnd("");
       setError("");
-      // push new matches and request to Firebase
+
+      
+    
     }
   }
 

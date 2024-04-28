@@ -56,8 +56,10 @@ const RequestCard = ({ request, setTabKey, data}) => {
   }
 
   const displayMatch = () => {
-    setTabKey("matches");
-    
+    if (status == "Matched") {
+      
+      setTabKey("matches");
+    } 
   }
   return (
     <Card className="dataCard" >
@@ -73,7 +75,7 @@ const RequestCard = ({ request, setTabKey, data}) => {
           Time: {startTime} - {endTime}
         </Card.Text>
         <Card.Subtitle className="mb-2 text-muted">
-          Status: <a href="#" onClick={ displayMatch }>{status}</a>
+          Status: <a href={"#" + {matchId}} onClick={ displayMatch }>{status}</a>
         </Card.Subtitle>
 
         <Button variant="danger" onClick={handleDelete}>Delete</Button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { db } from "../../utilities/FireBase.js";
+import { db, formatData } from "../../utilities/FireBase.js";
 import { ref, onValue } from "firebase/database";
 import { useEffect } from "react";
 import RideForm from "../RideForm/RideForm.jsx";
@@ -10,7 +10,10 @@ import NavBar from "../NavBar/NavBar.jsx";
 import { ChakraProvider } from "@chakra-ui/react";
 
 const App = () => {
-  const [FirebaseData, setFirebaseData] = useState({"requests":[], "matches":[]});
+  const [FirebaseData, setFirebaseData] = useState({
+    requests: [],
+    matches: [],
+  });
   const [key, setKey] = useState("request");
   const [user, setUser] = useState("johnsmith@gmail.com");
 
@@ -37,82 +40,8 @@ const App = () => {
   //   );
   // }
 
-  if (FirebaseData) {
-    var reqData = Array();
-    // fixed for nonconsecutive indices
-    for (const [key, value] of Object.entries(FirebaseData["requests"])) {
-      foundMaxRequestId < parseInt(key)
-        ? (foundMaxRequestId = parseInt(key))
-        : null;
+  const data = formatData(FirebaseData)
 
-      const {
-        email,
-        locationFrom,
-        locationTo,
-        numRiders,
-        requestTimeStart,
-        requestTimeEnd,
-        status,
-        match_id,
-      } = value;
-
-      if (email == user) {
-        var matchStart = new Date(requestTimeStart * 1000).toLocaleString();
-        var matchEnd = new Date(requestTimeEnd * 1000).toLocaleString();
-        reqData.push([
-          matchStart,
-          matchEnd,
-          locationFrom,
-          locationTo,
-          user,
-          numRiders,
-          status,
-          key,
-          match_id,
-        ]);
-      }
-      reqData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-    }
-
-    var matchData = Array();
-    // fixed for nonconsecutive indices
-    for (const [key, value] of Object.entries(FirebaseData["matches"])) {
-      foundMaxMatchId < parseInt(key)
-        ? (foundMaxMatchId = parseInt(key))
-        : null;
-
-      const {
-        timeStart,
-        timeEnd,
-        locationFrom,
-        locationTo,
-        rider1,
-        rider2,
-        rider3,
-      } = value;
-
-      let riderArr = Array();
-
-      rider1 ? riderArr.push(rider1) : null;
-      rider2 ? riderArr.push(rider2) : null;
-      rider3 ? riderArr.push(rider3) : null;
-
-      if (riderArr.includes(user)) {
-        var matchStart = new Date(timeStart * 1000).toLocaleString();
-        var matchEnd = new Date(timeEnd * 1000).toLocaleString();
-        matchData.push([
-          matchStart,
-          matchEnd,
-          locationFrom,
-          locationTo,
-          riderArr,
-          key,
-        ]);
-      }
-
-      matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-    }
-  }
   // Accessing just the rider1 field from the first object in FirebaseData
   // console.log(FirebaseData)
   // max id for new request
@@ -133,8 +62,8 @@ const App = () => {
           />
           <Row>
             <DataLogger
-              reqData={reqData}
-              matchData={matchData}
+              reqData={data["reqData"]}
+              matchData={data["matchData"]}
               tabKey={key}
               setTabKey={setKey}
               firebaseData={FirebaseData}

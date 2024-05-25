@@ -40,12 +40,15 @@ const App = () => {
   //   );
   // }
 
-  const data = formatData(FirebaseData)
+  const data = formatData(FirebaseData, user)
 
   // Accessing just the rider1 field from the first object in FirebaseData
   // console.log(FirebaseData)
   // max id for new request
-  foundMaxRequestId++;
+  //foundMaxRequestId++;
+
+  foundMaxMatchId = data["foundMaxMatchId"]
+  foundMaxRequestId = data["foundMaxRequestId"] + 1
 
   return (
     <ChakraProvider>

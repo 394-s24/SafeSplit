@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { db, formatData } from "../../utilities/FireBase.js";
-import { ref, onValue } from "firebase/database";
+import { FetchData, formatData } from "../../utilities/FireBase.js";
 import { useEffect } from "react";
 import RideForm from "../RideForm/RideForm.jsx";
 import DataLogger from "../DataLogger/DataLogger.jsx";
@@ -17,11 +16,16 @@ const App = () => {
   const [key, setKey] = useState("request");
   const [user, setUser] = useState("johnsmith@gmail.com");
 
+  const getData = async () => {
+    const data = await FetchData();
+
+    setFirebaseData(data)
+
+    return data
+  }
+
   useEffect(() => {
-    const firebaseRef = ref(db);
-    onValue(firebaseRef, (snapshot) => {
-      setFirebaseData(snapshot.val());
-    });
+    getData()
   }, []);
 
   let foundMaxMatchId = 0;
@@ -40,15 +44,25 @@ const App = () => {
   //   );
   // }
 
-  const data = formatData(FirebaseData, user)
+  if (FirebaseData["requests"] == undefined) {
+    setFirebaseData({
+      requests: [],
+      matches: [],
+    });
+  }
+
+  //console.log(FirebaseData["requests"])
+  console.log("In app",FirebaseData);
+
+  const data = formatData(FirebaseData, user);
 
   // Accessing just the rider1 field from the first object in FirebaseData
   // console.log(FirebaseData)
   // max id for new request
   //foundMaxRequestId++;
 
-  foundMaxMatchId = data["foundMaxMatchId"]
-  foundMaxRequestId = data["foundMaxRequestId"] + 1
+  foundMaxMatchId = data["foundMaxMatchId"];
+  foundMaxRequestId = data["foundMaxRequestId"] + 1;
 
   return (
     <ChakraProvider>

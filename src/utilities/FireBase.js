@@ -24,22 +24,22 @@ const analytics = getAnalytics(app);
 const db = getDatabase(app);
 
 //fetch data from firebase and display it in console
-function FetchData() {
-  var data;
-  onValue(
-    ref(db, "/requests"),
-    (snap) => {
-      if (snap.val()) {
-        data = snap.val();
-        console.log(data);
-        return Object.values(data);
-      }
-    },
-    (error) => {
-      data = error;
-    }
-  );
-}
+let FetchData = async () => {
+
+  const firebaseRef = await ref(db);
+
+  let data = new Promise ((resolve) => {
+    onValue(firebaseRef, (snapshot) => {
+      resolve(snapshot.val());
+    });
+  })
+  
+  const firebaseData = await data;
+
+  console.log("This should never be a promise", firebaseData)
+
+  return firebaseData;
+};
 
 const formatData = (FirebaseData, user) => {
   let foundMaxMatchId = 0;
@@ -117,7 +117,12 @@ const formatData = (FirebaseData, user) => {
     matchData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   }
 
-  return { reqData: reqData, matchData: matchData, foundMaxMatchId: foundMaxMatchId, foundMaxRequestId: foundMaxRequestId };
+  return {
+    reqData: reqData,
+    matchData: matchData,
+    foundMaxMatchId: foundMaxMatchId,
+    foundMaxRequestId: foundMaxRequestId,
+  };
 };
 
-export { db, formatData };
+export { db, formatData, FetchData };

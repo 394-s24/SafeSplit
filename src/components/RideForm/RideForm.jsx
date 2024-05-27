@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import DateTimePicker from "react-datetime-picker";
 import "./RideForm.css";
 import { useToast } from '@chakra-ui/react'
 

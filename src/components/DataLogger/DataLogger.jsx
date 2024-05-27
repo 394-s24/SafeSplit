@@ -1,10 +1,7 @@
 import React from "react";
-import { useState } from 'react';
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import Card from "react-bootstrap/Card";
 import MatchCard from "../MatchCard/MatchCard";
-import ReactDatePicker from "react-datepicker";
 import "./DataLogger.css";
 import RequestCard from "../RequestCard/RequestCard";
 

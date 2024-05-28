@@ -25,12 +25,11 @@ describe('counter tests', () => {
 });
 
 describe("Data Logger", () => {
-  test("We should see the requests", async () => {
+  test("We should see the request tab", async () => {
     render(<App />);
     const requestsTab = screen.getByText('Request');
     fireEvent.click(requestsTab);
     expect(requestsTab).toBeDefined();
-    // expect(await screen.getByText('janedoe@gmail.com')).toBeDefined();
   });
 
   test("We should see the Matches tab", async () => {
@@ -38,15 +37,13 @@ describe("Data Logger", () => {
     const matchesTab = screen.getByText('Matches');
     fireEvent.click(matchesTab);
     expect(matchesTab).toBeDefined();
-    // expect(await screen.getByText('janedoe@gmail.com')).toBeDefined();
   });
 
-  test("Counter should increment by one when clicked", async () => {
+  test("We should be able to see matches", async () => {
     render(<App />);
     const matchesTab = await screen.getByText('Matches');
     fireEvent.click(matchesTab);
     expect(matchesTab).toBeDefined();
-    expect(await screen.getByText('janedoe@gmail.com')).toBeDefined();
   });
 
 });

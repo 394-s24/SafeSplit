@@ -4,6 +4,8 @@ import { getAnalytics } from "firebase/analytics";
 import "firebase/database";
 import { getDatabase } from "firebase/database";
 import { ref, onValue } from "firebase/database";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import { useEffect, useState } from "react";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -123,6 +125,26 @@ const formatData = (FirebaseData, user) => {
     foundMaxMatchId: foundMaxMatchId,
     foundMaxRequestId: foundMaxRequestId,
   };
+};
+
+
+
+export const signInWithGoogle = () => {
+  signInWithPopup(getAuth(app), new GoogleAuthProvider());
+};
+
+const firebaseSignOut = () => signOut(getAuth(app));
+
+export { firebaseSignOut as signOut };
+
+export const useAuthState = () => {
+  const [user, setUser] = useState();
+  
+  useEffect(() => (
+    onAuthStateChanged(getAuth(app), setUser)
+  ), []);
+
+  return [user];
 };
 
 export { db, formatData, FetchData };

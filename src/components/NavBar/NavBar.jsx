@@ -6,8 +6,19 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Navigation from './Navigation';
+import {useAuthState} from '../../utilities/FireBase';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const NavBar = ({ user, setUser }) => {
+  
+  const [authState] =  useAuthState();
+  
+  useEffect(() => {
+    authState != null ? setUser(() => authState.email) : setUser(null);
+  }, [authState]);
+  
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -24,14 +35,12 @@ const NavBar = ({ user, setUser }) => {
         <Navbar.Collapse className="justify-content-end">
           <Nav>
             <Navbar.Text>
-              Signed in as: {user}
+              Signed in as: {user === null ? "" : user}
             </Navbar.Text>
-            <NavDropdown title="Select User" id="basic-nav-dropdown" onSelect={function (evt) { setUser(evt) }}>
-              <NavDropdown.Item eventKey="johnsmith@gmail.com">johnsmith@gmail.com</NavDropdown.Item>
-              <NavDropdown.Item eventKey="gracehopper@gmail.com">gracehopper@gmail.com</NavDropdown.Item>
-              <NavDropdown.Item eventKey="janedoe@gmail.com">janedoe@gmail.com</NavDropdown.Item>
+            <Navigation />
+            
 
-            </NavDropdown>
+          
           </Nav>
         </Navbar.Collapse>
       </Container>
@@ -40,3 +49,12 @@ const NavBar = ({ user, setUser }) => {
 }
 
 export default NavBar
+
+
+
+{/* <NavDropdown title="Select User" id="basic-nav-dropdown" onSelect={function (evt) { setUser(evt) }}>
+              <NavDropdown.Item eventKey="johnsmith@gmail.com">johnsmith@gmail.com</NavDropdown.Item>
+              <NavDropdown.Item eventKey="gracehopper@gmail.com">gracehopper@gmail.com</NavDropdown.Item>
+              <NavDropdown.Item eventKey="janedoe@gmail.com">janedoe@gmail.com</NavDropdown.Item>
+
+            </NavDropdown> */}

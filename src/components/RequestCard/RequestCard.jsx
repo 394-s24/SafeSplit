@@ -27,24 +27,24 @@ const RequestCard = ({ request, setTabKey, data}) => {
 
     //firebase remove set ref location's value to null!
     if(status==="Pending"){
-      console.log("deleting request", requestId);
+      //console.log("deleting request", requestId);
       remove(ref(db, 'requests/' + requestId));
 
     }
     //when request is matched, remove the request and match, then reset request within the match
     else{
     // remove the match associated with the request from db
-    console.log("deleting match", matchId);
+    //console.log("deleting match", matchId);
     remove(ref(db, 'matches/' + matchId));
-    console.log("deleting request", requestId);
+    //console.log("deleting request", requestId);
     remove(ref(db, 'requests/' + requestId));
     //  go into match and adjust associated requests
       for (const key in requests){
-        console.log( requests[key]['match_id'])
+        //console.log( requests[key]['match_id'])
         //console.log(requests[key]['match_id']==matchId)
         //find request with same match_id , set match_id to '' ,status to 'pending'
         if(requests[key]['match_id']==matchId&&key!=requestId){
-          console.log("set key  "+key+" to Pending and empty matchid")
+          //console.log("set key  "+key+" to Pending and empty matchid")
           //muti-line update: https://firebase.blog/posts/2015/09/introducing-multi-location-updates-and_86
           update(ref(db, "requests/" + key),{
             status: "Pending",

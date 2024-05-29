@@ -52,9 +52,10 @@ const App = () => {
   }
 
   //console.log(FirebaseData["requests"])
-  console.log("In app",FirebaseData);
+  //console.log("In app",FirebaseData);
 
-  const data = formatData(FirebaseData, user);
+  const data = formatData(FirebaseData, user); 
+  console.log(data)
 
   // Accessing just the rider1 field from the first object in FirebaseData
   // console.log(FirebaseData)

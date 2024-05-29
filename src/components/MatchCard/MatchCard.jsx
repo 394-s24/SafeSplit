@@ -17,13 +17,13 @@ const MatchCard = ({ match, data}) => {
 
     const handleDelete = () => {
       // remove the match associated with the request from db
-      console.log("deleting match", match_id);
+      //console.log("deleting match", match_id);
       remove(ref(db, 'matches/' + match_id));
   
       for (const key in requests){
         //find request with same match_id , set match_id to '' ,status to 'pending'
         if(requests[key]['match_id']==match_id){
-          console.log("set request "+key+" to Pending and empty matchid")
+          //console.log("set request "+key+" to Pending and empty matchid")
           //muti-line update: https://firebase.blog/posts/2015/09/introducing-multi-location-updates-and_86
           update(ref(db, "requests/" + key),{
             status: "Pending",

@@ -6,7 +6,7 @@ import "./DataLogger.css";
 import RequestCard from "../RequestCard/RequestCard";
 
 const DataLogger = ({ matchData, reqData, tabKey, setTabKey, firebaseData}) => {
-  console.log(reqData)
+  //console.log(reqData)
   return (
     <div id="DataLogger">
       {" "}

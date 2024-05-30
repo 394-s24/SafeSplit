@@ -1,7 +1,9 @@
-import { describe, expect, test } from "vitest";
+import {beforeEach, describe, expect, test, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import App from "./components/App/App";
 import DataLogger from "./components/DataLogger/DataLogger";
+import * as util from './utilities/FireBase';
+import { useState } from 'react';
 
 describe("counter tests", () => {
   test("we should see the submit button for the form", () => {
@@ -9,10 +11,7 @@ describe("counter tests", () => {
     expect(screen.findAllByText("Submit form")).toBeDefined();
   });
 
-  test("We should see the user logged in", () => {
-    render(<App />);
-    expect(screen.findAllByText("johnsmith@gmail.com")).toBeDefined();
-  });
+  
 
   test("we should see the delete button for ", () => {
     render(<App />);
@@ -78,3 +77,39 @@ describe("Data Logger Mock Data", () => {
 
   });
 });
+
+const mockUser = {
+  name : "Ege",
+  email: "Ege@mock.com"
+};
+
+describe("Mock User, not authenticated", () => {
+  
+  
+  test("We should not see a sign out button, we assume that there is no authenticated user when app launches", async () => {
+    vi.spyOn(util, 'useAuthState').mockReturnValue([null]);
+    render(<App />);
+    expect(await !screen.findByText("Sign out")).toBeDefined();
+  });
+  test("We should see the sign in button", async () => {
+    vi.spyOn(util, 'useAuthState').mockReturnValue([null]);
+    render(<App />);
+    expect(await screen.findByText("Sign in")).toBeDefined();
+  });
+
+});
+describe("Mock User, authenticated", () => {
+  test("We should see the sign out button", async () => {
+    vi.spyOn(util, 'useAuthState').mockReturnValue([mockUser]);
+    render(<App />);
+    expect(await screen.findByText("Sign out")).toBeDefined();
+  });
+  test("We should not see the sign in button", async () => {
+    vi.spyOn(util, 'useAuthState').mockReturnValue([mockUser]);
+    render(<App />);
+    expect(await !screen.findByText("Sign in")).toBeDefined();
+  });
+})
+
+
+

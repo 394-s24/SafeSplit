@@ -269,6 +269,8 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
                 onChange={(e) => setLocationFrom(e.target.value)}
                 required
                 placeholder="Location From"
+                data-testid="pickupLoc"
+
               >
                 <option value="">Choose...</option>
                 <option value="Allison">Allison</option>
@@ -287,6 +289,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
                 onChange={(e) => setLocationTo(e.target.value)}
                 required
                 placeholder="Location To"
+                data-testid="dropoffLoc"
               >
                 <option value="">Choose...</option>
                 <option value="Trader joes">Trader joes</option>
@@ -307,6 +310,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
                 type="date"
                 placeholder="City"
                 required
+                data-testid="pickupDateE"
               />
               <Form.Control.Feedback type="invalid">
                 Please provide a valid date.
@@ -320,6 +324,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
                 type="time"
                 placeholder="State"
                 required
+                data-testid="pickupTimeE"
               />
               <Form.Control.Feedback type="invalid">
                 Please provide a valid time.
@@ -334,6 +339,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
                 onChange={(e) => setDateEnd(e.target.value)}
                 type="date"
                 required
+                data-testid="pickupDateL"
               />
               <Form.Control.Feedback type="invalid">
                 Please provide a valid date
@@ -346,6 +352,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
                 onChange={(e) => setTimeEnd(e.target.value)}
                 type="time"
                 required
+                data-testid="pickupTimeL"
               />
               <Form.Control.Feedback type="invalid">
                 Please provide a valid time.
@@ -356,7 +363,7 @@ const RideForm = ({ currMaxId, currMaxMatchId, data, tabKey, setTabKey, user}) =
             <p style = {{color:"red"}}>{error}</p>
           </Row>
 
-          <Button type="submit">Submit form</Button>
+          <Button type="submit" data-testid="submit-button">Submit form</Button>
         </Form>
       </Col>
     </Row>

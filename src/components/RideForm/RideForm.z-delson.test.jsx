@@ -7,6 +7,7 @@ describe("Form submission test", () => {
     test("submitting the form with valid data", async () => {
         render(<App />);
 
+
         const pickupLocation = screen.getByTestId("pickupLoc");
         const dropOffLocation = screen.getByTestId("dropoffLoc");
         const pickupDateE = screen.getByTestId("pickupDateE");
@@ -15,6 +16,7 @@ describe("Form submission test", () => {
         const pickupTimeL = screen.getByTestId("pickupTimeL");
         const submitForm = screen.getByTestId("submit-button");
 
+        //sets up the test envioronment
         fireEvent.change(pickupLocation, {target: { value: "Tech" } });
         fireEvent.change(dropOffLocation, {target: { value: "Ohare" } });
         fireEvent.change(pickupDateE, {target: { value: "2024-02-10" } });
@@ -23,7 +25,7 @@ describe("Form submission test", () => {
         fireEvent.change(pickupTimeL, {target: { value: "2:10"} });
         fireEvent.click(submitForm);
         fireEvent.click(deleteField)
-        expect(screen.queryByText('Error')).toBeNull();
+        expect(screen.queryByText('Please select a future date')).not.toBeNull();
         expect(screen.getByText('Error: Invalid input')).toBeInTheDocument();
 
     });
